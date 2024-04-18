@@ -1,31 +1,108 @@
 // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
+
+import { EnumType } from 'typescript';
+import { OtherService } from '../ui/form/buttons';
+
 // However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
+  UserID: string;
+  UserRole: 'Admin' | 'User';
+  UserName: string;
+  UserPhone: number;
+  Password: string;
 };
 
+export type Employee = {
+  EmployeeID: number;
+  LastName: string;
+  FirsName: string;
+  BirthDate: Date;
+  Sex: 'F' | 'M';
+  Register: Char(10);
+  Address: number;
+  Phone: number;
+  Education: 'Боловсролгүй' | 'Бага' | 'Суурь' | 'Бүрэн дунд' | 'Техникийн болон мэргэжилтэн' | 'Тусгай мэргэжлийн дунд' | 'Дипломын болон бакалаврын дээд' | 'Магистр' | 'Доктор';
+  Occupation: number;
+  StatePrize: Boolean;
+  Impairment: boolean;
+};
+export type Occupation = {
+  OccupationID: number;
+  Occupation: string;
+  ParentID: number;
+};
+export type Address = {
+  AddressID: number;
+  Country: string;
+  Province: 'Архангай' | 'Баян-өлгий' | 'Баянхонгор' | 'Булган' | 'Говь-Алтай' | 'Говьсүмбэр' | 'Дархан-Уул' | 'Дорноговь' | 'Дорнод' | 'Дундговь' | 'Завхан' | 'Орхон' | 'Өвөрхангай' | 'Өмнөговь' | 'Сүхбаатар' | 'Сэлэнгэ' | 'Төв' | 'Увс' | 'Ховд' | 'Хөвсгөл' | 'Хэнтий';
+  District: number;
+  Khoroo: string;
+};
+export type District = {
+  DistrictID: number;
+  District: 'Багануур' | 'Багахангай' | 'Баянгол' | 'Баянзүрх' | 'Налайх' | 'Сонгинохайрхан' | 'Сүхбаатар' | 'Хан-Уул' | 'Чингэлтэй';
+};
+export type ExhibitHistory = {
+  ExhibitID: number;
+  ExhibitType: number;
+  Name: string;
+  Added_Exhibit: 'Худалдан авсан' | 'Бэлэг хандив' | 'Шилжүүлсэн' | 'Хайгуул малтлага, судалгаагаар';
+  Rating: 'Түүх, соёлын хосгүй үнэт' | 'Түүх соёлын үнэт';
+  Weight: number;
+  Set: string;
+  Restoration: boolean;
+  RestorationDetail: string;
+  Exposed: boolean;
+  ExposedDetail: string;
+  Definition: string;
+  Location: number;
+};
+export type Exhibit = {
+  ExhibitID: number;
+  ExhibitType: string;
+  ParentID: number;
+};
+export type Location = {
+  LocationID: number;
+  Latitude: string;
+  Longtitude: string;
+};
+export type MuseumService = {
+  MuseumServiceID: number;
+  ServiceType: 'Байнгын үзүүллэг' | 'Түр үзэсгэлэн';
+  ServiceSubType: ;
+  Customer: ;
+  KindID: ; 
+};
+export type OtherService = {
+  OtherService: number;
+  Services: '';
+  Customer: number;
+};
+export type Kind = {
+  KindID: number;
+  Kind: string;
+  ParentID: number;
+};
 export type Customer = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
+  CustomerID: number;
+  Customer: 'Хүүхэд' | 'Төлбөргүй' | 'Гадаад' | 'Тусгай бүлгийн' | 'Хөгжлийн бэрхшээлтэй' | 'Бусад';
 };
-
+export type BuildingCapacity = {
+  BuildingCapacityID: number;
+  BuildingCapacity: 
+} 
 export type Invoice = {
   id: string;
   customer_id: string;
   amount: number;
   date: string;
   // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
+  // It means that the 'status' property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
 };
-
 export type Revenue = {
   month: string;
   revenue: number;
