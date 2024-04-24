@@ -27,16 +27,14 @@ export async function authenticate(
   }
 }
 const FormSchema = z.object({
-    id: z.string(),
-    customerId: z.string({
+    userId: z.number(),
+    userRole: z.string(),
+    userName: z.string({
         invalid_type_error: 'Please select a user.',
     }),
-    amount: z.coerce
-        .number()
-        .gt(0, { message: 'Please enter an amount greater than $0.' }),
-        status: z.enum(['pending', 'paid'],{
-            invalid_type_error: 'Please select an invoice status.',
-        }),
+    userPhone: z.number(),
+    password: z.string(),
+    employeeId: z.number(),
     date: z.string(),
   });
    
@@ -44,12 +42,12 @@ const CreateUser = FormSchema.omit({ id: true, date: true });
 const UpdateUser = FormSchema.omit({ id: true, date: true });
 export type State = {
     errors?: {
-      userId?: int[];
-      userRole: enumation{};
-      userName: string[];
-      userPhone: int[];
-      password: privateEncrypt;
-      employeeId: interface;
+      userId: number; 
+      userRole: string;
+      userName: string;
+      userPhone: number;
+      password: string;
+      employeeId: number;
     };
     message?: string | null;
   };
@@ -66,7 +64,7 @@ export type State = {
     if (!validatedFields.success) {
         return {
           errors: validatedFields.error.flatten().fieldErrors,
-          message: 'Missing Fields. Failed to Create Invoice.',
+          message: 'Missing Fields. Failed to Create User.',
         };
       }
       // Prepare data for insertion into the database

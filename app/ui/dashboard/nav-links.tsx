@@ -15,7 +15,7 @@ const links = [
   { name: 'Маягт', href: '/dashboard/form', icon: DocumentDuplicateIcon, },
   { name: 'Тайлан', href: '/dashboard/reports', icon: DocumentDuplicateIcon },
   { name: 'Дашбоард', href: '/dashboard/dashboard', icon: UserGroupIcon },
-  { name: 'Хэрэглэгч', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Хэрэглэгч', href: '/dashboard/users', icon: UserGroupIcon },
   { name: 'invoice', href: '/dashboard/invoices', icon: UserGroupIcon },
 ];
 
