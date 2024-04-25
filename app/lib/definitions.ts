@@ -59,10 +59,6 @@ export type ExhibitHistory = {
   Rating: 'Түүх, соёлын хосгүй үнэт' | 'Түүх соёлын үнэт';
   Weight: number;
   Set: string;
-  Restoration: boolean;
-  RestorationDetail: string;
-  Exposed: boolean;
-  ExposedDetail: string;
   Definition: string;
   Status: 'Хасагдсан үзмэр' | 'Дижитал хэлбэрт оруулсан' | 'Сэргээн засварласан' | 'Хуулбарлагдсан';
   AddressID: number;

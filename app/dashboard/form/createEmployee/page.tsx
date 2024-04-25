@@ -1,23 +1,23 @@
 import Form from '@/app/ui/invoices/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchEmployee } from '@/app/lib/data1';
  
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const employee = await fetchEmployee();
  
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Employee', href: '/dashboard/form' },
           {
-            label: 'Create Invoice',
-            href: '/dashboard/invoices/create',
+            label: 'Create Employee',
+            href: '/dashboard/form/createEmployee',
             active: true,
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form customers={employee} />
     </main>
   );
 }

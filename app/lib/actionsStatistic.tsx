@@ -135,3 +135,60 @@ export type State = {
     }
     revalidatePath('/dashboard/users');
   }
+  const FormExhibitSchema = z.object({
+    exhibitType: z.string(),
+    name: z.string(),
+    addedExhibit: z.string(),
+    rating: z.string(),
+    weight: z.number(),
+    set: z.string(),
+    restoration: z.boolean(),
+    restorationDetail: z.string(),
+    exposed: z.boolean(),
+    exposedDetail: z.string(),
+    definition: z.boolean(),
+    status: z.string(),
+    addressID: z.number(),
+    date: z.string(),
+  });
+   
+const CreateExhibit = FormExhibitSchema.omit({ id: true, date: true });
+  export async function createExhibit(prevState: State, formData: FormData) {
+    const validatedFields = CreateExhibit.safeParse({
+      exhibitType: formData.get('ExhibitType'),
+      name: formData.get('Name'),
+      addedExhibit: formData.get('Added_Exhibit'),
+      rating: formData.get('Rating'),
+      weight: formData.get('Weight'),
+      set: formData.get('Set'),
+      restoration: formData.get('Restoration'),
+      restorationDetail: formData.get('RestorationDetail'),
+      exposed: formData.get('Exposed'),
+      exposedDetail: formData.get('ExposedDetail'),
+      definition: formData.get('Definition'),
+      status: formData.get('Status'),
+      addressID: formData.get('AddressID'),
+    });
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+          errors: validatedFields.error.flatten().fieldErrors,
+          message: 'Missing Fields. Failed to Create Exhibit.',
+        };
+      }
+      // Prepare data for insertion into the database
+    const { exhibitType, name, addedExhibit, rating, weight, set, restoration, restorationDetail, exposed, exposedDetail, definition, status, addressID} = validatedFields.data;
+    const date = new Date().toISOString().split('T')[0];
+    try {
+        await sql`
+            INSERT INTO ExhibitHistory (ExhibitType, Name, Added_Exhibit, Rating, Weight, Set, Restoration, RestorationDetail, Exposed, ExposedDetail, Definition, Status, AddressID)
+            VALUES (${exhibitType}, ${name}, ${addedExhibit}, ${rating}, ${weight}, ${set}, ${restoration}, ${restorationDetail}, ${exposed}, ${exposedDetail}, ${definition}, ${status}, ${addressID})
+        `;
+      } catch (error) {
+        return {
+          message: 'Database Error: Failed to Create Exhibit.',
+        };
+      }
+    revalidatePath('/dashboard/form/createExhibit');
+    redirect('/dashboard/form/createExhibit');
+  }
