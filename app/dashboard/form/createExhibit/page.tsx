@@ -1,65 +1,23 @@
-'use client';
-import { Employee } from '@/app/lib/definitions';
-import Link from 'next/link';
-import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import { Button } from '@/app/ui/button';
-import { createExhibit } from '@/app/lib/actionsStatistic';
-import { useFormState } from 'react-dom';
-
-export default function Form({ employees }: { employees: Employee[] }) {
-  const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createExhibit, initialState);
+import Form from '@/app/ui/exhibit/create-form';
+import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import { fetchExhibitHistory } from '@/app/lib/data1';
+ 
+export default async function Page() {
+  const exhibit = await fetchExhibitHistory();
+ 
   return (
-    <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* employee Name */}
-        <div className="mb-4">
-          <label htmlFor="exhibit" className="mb-2 block text-sm font-medium">
-            Choose exhibit
-          </label>
-          <div className="relative">
-            <select
-              id="Exhibit"
-              name="ExhibitId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              aria-describedby="Exhibit-error"
-            >
-              <option value="" disabled>
-                Select a exhibit
-              </option>
-              {exhibit.map((exhibit) => (
-                <option key={exhibit.exhibitID} value={exhibit.exhibitID}>
-                  {exhibit.Name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-          <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.exhibitID &&
-              state.errors.exhibitID.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/form/exhibit"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Create Exhibit</Button>
-      </div>
-    </form>
+    <main>
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: 'Exhibit', href: '/dashboard/form' },
+          {
+            label: 'Create Exhibit',
+            href: '/dashboard/form/createExhibit',
+            active: true,
+          },
+        ]}
+      />
+      <Form exhibits={exhibit} />
+    </main>
   );
 }

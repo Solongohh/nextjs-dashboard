@@ -16,31 +16,39 @@ import { sql } from '@vercel/postgres';
   } from './definitions';
   import { formatCurrency } from './utils';
   import { unstable_noStore as noStore } from 'next/cache';
-  export async function fetchUser() {
-    // Add noStore() here to prevent the response from being cached.
-    // This is equivalent to in fetch(..., {cache: 'no-store'}).
-    noStore();
-    try {
-      // Artificially delay a response for demo purposes.
-      // Don't do this in production :)
+  // export async function fetchUser() {
+  //   // Add noStore() here to prevent the response from being cached.
+  //   // This is equivalent to in fetch(..., {cache: 'no-store'}).
+  //   noStore();
+  //   try {
+  //     // Artificially delay a response for demo purposes.
+  //     // Don't do this in production :)
   
-      console.log('Fetching revenue data...');
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+  //     console.log('Fetching revenue data...');
+  //     await new Promise((resolve) => setTimeout(resolve, 3000));
   
-      const data = await sql<User>`
-        SELECT * 
-        FROM User
-        JOIN  ON Employee.employeeID = employee.id`
-        ;
+  //     const data = await sql<User>`
+  //     SELECT
+  //     User.UserID,
+  //     User.UserRole,
+  //     User.UserName,
+  //     User.UserPhone,
+  //     User.Password
+  //     Employee.EmployeeID
+  //   FROM User
+  //   JOIN Employee ON Employee.EmployeeID = User.EmployeeID
+  //   WHERE
+  //     Employee.FirstName ILIKE ${`%${query}%`}`
+  //       ;
   
-      console.log('Data fetch completed after 3 seconds.');
+  //     console.log('Data fetch completed after 3 seconds.');
   
-      return data.rows;
-    } catch (error) {
-      console.error('Database Error:', error);
-      throw new Error('Failed to fetch user data.');
-    }
-  }
+  //     return data.rows;
+  //   } catch (error) {
+  //     console.error('Database Error:', error);
+  //     throw new Error('Failed to fetch user data.');
+  //   }
+  // }
   const ITEMS_PER_PAGE = 6;
   export async function fetchFilteredUser(
     query: string,
@@ -52,7 +60,7 @@ import { sql } from '@vercel/postgres';
     try {
       const users = await sql<UserTable>`
         SELECT
-          User.UserName,
+          User.UserID,
           User.UserRole,
           User.UserName,
           User.UserPhone,
@@ -62,7 +70,6 @@ import { sql } from '@vercel/postgres';
         JOIN Employee ON Employee.EmployeeID = User.EmployeeID
         WHERE
           Employee.FirstName ILIKE ${`%${query}%`}
-        LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
       `;
   
       return users.rows;
@@ -200,6 +207,39 @@ import { sql } from '@vercel/postgres';
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch exhibitType data.');
+    }
+  }
+  export async function fetchIncome() {
+    noStore();
+    try {
+      const data = await sql<Income>`
+        SELECT *
+        FROM Income
+        JOIN IncomeType ON IncomeType.IncomeTypeID = IncomeTypeID`;
+  
+      const latestIncome = data.rows.map((Income) => ({
+        ...Income,
+      }));
+      return latestIncome;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest Income.');
+    }
+  }
+  export async function fetchBuildingCapacity() {
+    noStore();
+    try {
+      const data = await sql<BuildingCapacity>`
+        SELECT *
+        FROM BuildingCapacity`;
+  
+      const latestBuildingCapacity = data.rows.map((BuildingCapacity) => ({
+        ...BuildingCapacity,
+      }));
+      return latestBuildingCapacity;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest BuildingCapacity.');
     }
   }
 //   export async function fetchFilteredInvoices(

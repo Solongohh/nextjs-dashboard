@@ -15,12 +15,12 @@ async function seedUsers(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS "User" (
-        "UserID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        "UserID" INTEGER SERIAL PRIMARY KEY,
         "UserRole" VARCHAR(255) NOT NULL,
         "UserName" VARCHAR(255) NOT NULL,
         "UserPhone" INTEGER NOT NULL,
         "Password" VARCHAR NOT NULL,
-        "EmployeeID" INT REFERENCES Employee ("EmployeeID")
+        "EmployeeID" INTEGER REFERENCES Employee ("EmployeeID")
       );
     `);
 
@@ -57,18 +57,18 @@ async function seedEmployee(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Employee (
-        "EmployeeID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        "EmployeeID" INTEGER SERIAL PRIMARY KEY,
         "LastName" VARCHAR(255) NOT NULL,
         "FirstName" VARCHAR(255) NOT NULL,
         "Birthdate" DATE,
-        "Sex" ENUM ('F', 'M'),
-        "Register" CHAR(10),
+        "Sex" CHAR(1),
+        "Register" INTEGERAR(10),
         "Phone" CHAR(8),
-        "Education" ENUM('Боловсролгүй','Бага','Суурь','Бүрэн дунд','Техникийн болон мэргэжилтэн','Тусгай мэргэжлийн дунд','Дипломын болон бакалаврын дээд','Магистр','Доктор'),
-        "OccupationID" INT REFERENCES Occupation ("OccupationID"),
+        "Education" VARCHAR,
+        "OccupationID" INTEGER REFERENCES Occupation ("OccupationID"),
         "Stateprize" BOOLEAN NOT NULL,
         "Impairment" BOOLEAN NOT NULL,
-        "AddressID" INT REFERENCES Address ("AddressID")
+        "AddressID" INTEGER REFERENCES Address ("AddressID")
       );
     `);
 
@@ -106,9 +106,9 @@ async function seedOccupation(client) {
     // Create the "Occupation" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Occupation (
-        "OccupationID" INT PRIMARY KEY,
+        "OccupationID" INTEGER PRIMARY KEY,
         "Occupation" VARCHAR(255) NOT NULL,
-        "ParentID" INT REFERENCES Occupation ("OccupationID")
+        "ParentID" INTEGER REFERENCES Occupation ("OccupationID")
       );
     `);
 
@@ -146,12 +146,12 @@ async function seedAddress(client) {
     // Create the "Address" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Address (
-        "AddressID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        "AddressID" INTEGER SERIAL PRIMARY KEY,
         "Country" VARCHAR(255) NOT NULL, 
-        "Province" ENUM('Архангай', 'Баян-өлгий', 'Баянхонгор', 'Булган', 'Говь-Алтай', 'Говьсүмбэр', 'Дархан-Уул', 'Дорноговь', 'Дорнод', 'Дундговь', 'Завхан', 'Орхон', 'Өвөрхангай', 'Өмнөговь', 'Сүхбаатар', 'Сэлэнгэ', 'Төв', 'Увс', 'Ховд', 'Хөвсгөл', 'Хэнтий'),
-        "District" ENUM('Багануур', 'Багахангай', 'Баянгол', 'Баянзүрх', 'Налайх', 'Сонгинохайрхан', 'Сүхбаатар', 'Хан-Уул', 'Чингэлтэй'),
+        "Province" VARCHAR,
+        "District" VARCHAR,
         "Khoroo" VARCHAR(255)
-      );
+ INTEGER);
     `);
 
     console.log(`Created "Address" table`);
@@ -189,20 +189,20 @@ async function seedExhibitHistory(client) {
     // Create the "ExhibitHistory" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExhibitHistory (
-        "ExhibitHistoryID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "ExhibitTypeID" INT REFERENCES ExhibitType ("ExhibitTypeID"),
+        "ExhibitHistoryID" INTEGER SERIAL PRIMARY KEY,
+        "ExhibitTypeID" INTEGER REFERENCES ExhibitType ("ExhibitTypeID"),
         "Name" VARCHAR(255) NOT NULL,
-        "Added_Exhibit" ENUM('Худалдан авсан', 'Бэлэг хандив', 'Шилжүүлсэн', 'Хайгуул малтлага, судалгаагаар'),
-        "Rating" ENUM('Түүх, соёлын хосгүй үнэт', 'Түүх соёлын үнэт'),
-        "Weight" DOUBLE PRECISION,
+        "Added_Exhibit" VARCHAR,
+        "Rating" VARCHAR,
+        "Weight" DOUBLE INTEGERCISION,
         "Set" VARCHAR(255),
         "Restoration" BOOLEAN NOT NULL,
         "RestorationDetail" VARCHAR(255),
         "Exposed" BOOLEAN NOT NULL,
         "ExposedDetail" VARCHAR(255),
         "Definition" VARCHAR(255),
-        "Status" ENUM('Хасагдсан үзмэр', 'Дижитал хэлбэрт оруулсан', 'Сэргээн засварласан', 'Хуулбарлагдсан'),
-        "AddressID" INT REFERENCES Address ("AddressID")
+        "Status" VARCHAR,
+        "AddressID" INTEGER REFERENCES Address ("AddressID")
       );
     `);
 
@@ -277,9 +277,9 @@ async function seedExhibitType(client) {
     // Create the "ExhibitType" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExhibitType (
-        "ExhibitTypeID" INT PRIMARY KEY,
-        "ExhibitType" ENUM('Байнгын үзүүллэг', 'Түр үзэсгэлэн', 'Байгалийн өвийн', 'Археологийн', 'Түүхийн', 'Угсаатны зүйн', 'Шашин шүтлэгийн', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран зураг', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Монгол зураг - шүтээн зураг', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран баримал', 'Урлаг, уран сайхны - Дүрслэх урлагийн - График', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Инстоляци', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Гар урлалын', 'Урлаг, уран сайхны - Гэрэл зургийн'),
-        "ParentID" INT REFERENCES ExhibitType ("ExhibitTypeID")
+        "ExhibitTypeID" INTEGER PRIMARY KEY,
+        "ExhibitType" VARCHAR,
+        "ParentID" INTEGER REFERENCES ExhibitType ("ExhibitTypeID")
       );
     `);
 
@@ -317,12 +317,12 @@ async function seedMuseumService(client) {
     // Create the "MuseumService" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS MuseumService (
-        "MuseumServiceID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "ExhibitTypeID" INT REFERENCES ExhibitType ("ExhibitTypeID"),
-        "CustomerTypeID" INT REFERENCES CustomerType ("CustomerTypeID"),
-        "KindID" INT REFERENCES Kind ("KindID")
+        "MuseumServiceID" INTEGER SERIAL PRIMARY KEY,
+        "ExhibitTypeID" INTEGER REFERENCES ExhibitType ("ExhibitTypeID"),
+        "CustomerTypeID" INTEGER REFERENCES CustomerType ("CustomerTypeID"),
+        "KindID" INTEGER REFERENCES Kind ("KindID")
       );
-    `);
+INTEGER`);
 
     console.log(`Created "MuseumService" table`);
 
@@ -357,11 +357,11 @@ async function seedOtherService(client) {
     // Create the "OtherService" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS OtherService (
-        "OtherServiceID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "Services" ENUM('Музейн боловсролын ажил', 'Сургалт семинар', 'Дугуйлан', 'Уралдаан, тэмцээн, наадам', 'Хурал, зөвлөгөөн', 'Үзэсгэлэн худалдаа', 'Зохион байгуулсан эвент / арга хэмжээ'),
-        "CustomerTypeID" INT REFERENCES CustomerType ("CustomerTypeID")
+        "OtherServiceID" INTEGER SERIAL PRIMARY KEY,
+        "Services" VARCHAR,
+        "CustomerTypeID" INTEGER REFERENCES CustomerType ("CustomerTypeID")
       );
-    `);
+ INTEGER`);
 
     console.log(`Created "OtherService" table`);
 
@@ -398,11 +398,11 @@ async function seedKind(client) {
     // Create the "Kind" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Kind (
-        "KindID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "Kind" ENUM('Үзэсгэлэнгийн танхимаар', 'Өөрийн', 'Хамтарсан', 'Гадны', 'Нүүдлийн үйлчилгээгээр', 'Дотоодод', 'Аймаг, нийслэл', 'Сум, дүүрэг', 'Баг, хороо', 'Гадаадад', 'Ази', 'Европ', 'Бусад'),
+        "KindID" INTEGER SERIAL PRIMARY KEY,
+        "Kind" VARCHAR,
         "ParentID" UUID REFERENCES Kind ("KindID")
       );
-    `);
+ INTEGER`);
 
     console.log(`Created "Kind" table`);
 
@@ -438,12 +438,12 @@ async function seedCustomerType(client) {
     // Create the "CustomerType" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS CustomerType (
-        "CustomerTypeID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "CustomerType" ENUM('Хүүхэд', 'Төлбөргүй', 'Гадаад', 'Тусгай бүлгийн', 'Хөгжлийн бэрхшээлтэй', 'Бусад')
+        "CustomerTypeID" INTEGER SERIAL PRIMARY KEY,
+        "CustomerType" VARCHAR
       );
     `);
 
-    console.log(`Created "CustomerType" table`);
+    console.log(`Created "CustomINTEGERtable`);
 
     // Insert data into the "CustomerType" table
     const insertedCustomerType = await Promise.all(
@@ -475,12 +475,12 @@ async function seedBuildingCapacity(client) {
     // Create the "BuildingCapacity" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
-        "BuildingCapacityID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "BuildingCapacity" ENUM('Барилгын нийт талбай м2', 'Барилгын нийт эзлэхүүн м3', 'Тоглолтын тайзны эзлэхүүн м3', 'Барилын нийт өрөөний тоо', 'Барилгын давхрын тоо', 'Цахилгаан шатны тоо', 'Хөрөөны хөгжлийн бэрхшээлтэй иргэд явах тусгай замын тоо', 'Хөгжлийн бэрхшээлтэй иргэдэд зориулсан ариун цэврийн өрөөний тоо', 'Тэргэнцэртэй иргэдийн налуу замын тоо', 'Тайзны тоо', 'Суудлын тоо'),
-        "CapacityPlan" INT NOT NULL,
-        "CapacityPerformance" INT NOT NULL
+        "BuildingCapacityID" INTEGER SERIAL PRIMARY KEY,
+        "BuildingCapacity" VARCHAR,
+        "CapacityPlan" INTEGER NOT NULL,
+        "CapacityPerformance" INTEGER NOT NULL
       );
-    `);
+INTEGER`);
 
     console.log(`Created "BuildingCapacity" table`);
 
@@ -515,13 +515,12 @@ async function seedExpenses(client) {
     // Create the "Expenses" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Expenses (
-        "ExpensesID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        "ExpensesID" INTEGER SERIAL PRIMARY KEY,
         "ExpensesTypeID" INT,
-        "ExpensesPlan" INT NOT NULL,
-        "ExpensesPerformance" INT NOT NULL,
+        "ExpensesPlan" INTEGER NOT NULL,
+        "ExpensesPerformance" INTEGER NOT NULL,
         FOREIGN KEY ("ExpensesTypeID") REFERENCES ExpensesType ("ExpensesTypeID")
-      );
-    `);
+ INTEGER`);
 
     console.log(`Created "Expenses" table`);
 
@@ -556,12 +555,12 @@ async function seedExpensesType(client) {
     // Create the "ExpensesType" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExpensesType (
-        "ExpensesTypeID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "ExpensesType" ENUM ('Урсгал зардал','Соёлын үйл ажиллагааны зардал','Ном хэвлэл худалдан авах зардал','Уран бүтээлийн зардал','Түүх соёлын дурсгал зүйлийг хамгаалах зардал','Түүх соёлын дурсгалт зүйл сэргээн засварлах зардал','Гадаадад зохиогдох соёл урлагийн а/хэмжээний зардал','Сургалтын зардал','Үүнээс гадагш чиглэсэн сургалтын зардал','Соёл, олон нийтийн ажил зохион байгуулсан зардал','Үүнээс гадагш чиглэсэн арга хэмжээний зардал'),
+        "ExpensesTypeID" INTEGER SERIAL PRIMARY KEY,
+        "ExpensesType" VARCHAR,
         "ParentID" UUID,
         FOREIGN KEY ("ParentID") REFERENCES ExpensesType ("ExpensesTypeID")
       );
-    `);
+INTEGER`);
 
     console.log(`Created "ExpensesType" table`);
 
@@ -596,13 +595,12 @@ async function seedIncome(client) {
     // Create the "Income" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Income (
-        "IncomeID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        "IncomeID" INTEGER SERIAL PRIMARY KEY,
         "IncomeTypeID" INT,
-        "IncomePlan" INT NOT NULL,
-        "IncomePerformance" INT NOT NULL,
+        "IncomePlan" INTEGER NOT NULL,
+        "IncomePerformance" INTEGER NOT NULL,
         FOREIGN KEY ("IncomeTypeID") REFERENCES IncomeType ("IncomeTypeID")
-      );
-    `);
+ INTEGER`);
 
     console.log(`Created "Income" table`);
 
@@ -638,21 +636,12 @@ async function seedIncomeType(client) {
     // Create the "IncomeType" table if it doesn't exist
     const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS IncomeType (
-        "IncomeTypeID" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        "IncomeType" ENUM (
-          'Үйл ажиллагааны орлого',
-          'Байгууллагын ажил үйлчилгээний (өөрийн) орлого',
-          'Түрээсийн орлого',
-          'Бусад орлого',
-          'Тусламж санхүүжилтийн орлого',
-          'Улсын төсвөөс',
-          'Орон нутгийн төсвөөс',
-          'Хөтөлбөр, төслийн санхүүжилт'
-        ),
+        "IncomeTypeID" INTEGER SERIAL PRIMARY KEY,
+        "IncomeType" VARCHAR,
         "ParentID" UUID,
         FOREIGN KEY ("ParentID") REFERENCES IncomeType ("IncomeTypeID")
       );
-    `);
+INTEGER`);
 
     console.log(`Created "IncomeType" table`);
 

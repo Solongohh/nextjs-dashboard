@@ -163,7 +163,7 @@ export function InvoicesMobileSkeleton() {
   );
 }
 
-export function InvoicesTableSkeleton() {
+export function UsersTableSkeleton() {
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -175,24 +175,28 @@ export function InvoicesTableSkeleton() {
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  UserID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  UserRole
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  UserName
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  UserPhone
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  Password
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  EmployeeID
                 </th>
                 <th
                   scope="col"
@@ -203,6 +207,7 @@ export function InvoicesTableSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white">
+              <TableRowSkeleton />
               <TableRowSkeleton />
               <TableRowSkeleton />
               <TableRowSkeleton />

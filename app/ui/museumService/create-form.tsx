@@ -1,5 +1,5 @@
 'use client';
-import { Employee } from '@/app/lib/definitions';
+import { MuseumService } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -8,12 +8,12 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createEmployee } from '@/app/lib/actionsStatistic';
+import { createMuseumService } from '@/app/lib/actionsStatistic';
 import { useFormState } from 'react-dom';
 
-export default function Form({ employees }: { employees: Employee[] }) {
+export default function Form({ museumservices }: { museumservices: MuseumService[] }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createEmployee, initialState);
+  const [state, dispatch] = useFormState(createMuseumService, initialState);
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -24,26 +24,25 @@ export default function Form({ employees }: { employees: Employee[] }) {
           </label>
           <div className="relative">
             <select
-              id="employee"
-              name="employeeID"
+              id="customer"
+              name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
-              aria-describedby="employee-error"
+              aria-describedby="customer-error"
             >
               <option value="" disabled>
                 Select a employee
               </option>
-              {employees.map((Employee) => (
-                <option key={Employee.EmployeeID} value={Employee.EmployeeID}>
-                  {Employee.FirsName}
+              {museumservices.map((MuseumService) => (
+                <option key={museumservices.MuseumServiceID} value={museumservices.MuseumServiceID}>
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.employeeID &&
-              state.errors.employeeID.map((error: string) => (
+            {state.errors?.MuseumServiceID &&
+              state.errors.MuseumServiceID.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
