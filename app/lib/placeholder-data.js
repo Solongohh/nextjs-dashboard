@@ -7,7 +7,7 @@ const User = [
   {
     UserID: '02',
     UserRole: 'Administrator',
-    UserName: 'User',
+    UserMail: 'User@gmail.com',
     UserPhone: '88151515',
     Password: '123456',
     EmployeeID: '102'

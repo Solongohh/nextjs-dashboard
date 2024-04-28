@@ -62,7 +62,7 @@ import { sql } from '@vercel/postgres';
         SELECT
           User.UserID,
           User.UserRole,
-          User.UserName,
+          User.UserMail,
           User.UserPhone,
           User.Password
           Employee.EmployeeID

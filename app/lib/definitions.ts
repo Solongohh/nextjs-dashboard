@@ -9,7 +9,7 @@ import { OtherService } from '../ui/form/buttons';
 export type User = {
   UserID: number;
   UserRole: 'Admin' | 'User';
-  UserName: string;
+  UserMail: string;
   UserPhone: number;
   Password: string;
   EmployeeID: number
@@ -17,7 +17,7 @@ export type User = {
 export type UserTable = {
   UserID: number;
   UserRole: string;
-  UserName: string;
+  UserMail: string;
   UserPhone: string;
   date: string;
 };

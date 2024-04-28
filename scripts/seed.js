@@ -17,7 +17,7 @@ async function seedUsers(client) {
       CREATE TABLE IF NOT EXISTS "User" (
         "UserID" INTEGER SERIAL PRIMARY KEY,
         "UserRole" VARCHAR(255) NOT NULL,
-        "UserName" VARCHAR(255) NOT NULL,
+        "UserMail" VARCHAR(255) NOT NULL,
         "UserPhone" INTEGER NOT NULL,
         "Password" VARCHAR NOT NULL,
         "EmployeeID" INTEGER REFERENCES Employee ("EmployeeID")
@@ -31,10 +31,10 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.Password, 10);
         return client.query(`
-          INSERT INTO "User" ("UserRole", "UserName", "UserPhone", "Password", "EmployeeID")
+          INSERT INTO "User" ("UserRole", "UserMail", "UserPhone", "Password", "EmployeeID")
           VALUES ($1, $2, $3, $4, (SELECT "EmployeeID" FROM "Employee" WHERE "EmployeeID" = $5))
           ON CONFLICT ("UserID") DO NOTHING;
-        `, [user.UserRole, user.UserName, user.UserPhone, hashedPassword, user.EmployeeID]);
+        `, [user.UserRole, user.UserMail, user.UserPhone, hashedPassword, user.EmployeeID]);
       }),
     );
 
