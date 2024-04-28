@@ -1,5 +1,5 @@
 import Form from '@/app/ui/exhibit/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Breadcrumbs from '@/app/ui/exhibit/breadcrumbs';
 import { fetchExhibitHistory } from '@/app/lib/data';
  
 export default async function Page() {

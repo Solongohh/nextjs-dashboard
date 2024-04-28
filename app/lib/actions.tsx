@@ -245,6 +245,55 @@ const CreateMuseumService = FormMuseumServiceSchema.omit({ museumServiceID: true
     revalidatePath('/dashboard/form/createMuseumService');
     redirect('/dashboard/createMuseumService');
   }
+  const FormOtherServiceSchema = z.object({
+    otherServiceID: z.number(), 
+    services: z.string(),
+    customerTypeID: z.number(),
+    kindID: z.number(),
+    customerCount: z.number(),
+  });
+  export type OtherServiceState = {
+    errors?: {
+      otherServiceID: number; 
+      services: string;
+      customerTypeID: number;
+      kindID: number;
+      customerCount: number;
+    };
+    message?: string | null;
+  };
+const CreateOtherService = FormOtherServiceSchema.omit({ otherServiceID: true, date: true });
+  export async function createOtherService(prevState: OtherServiceState, formData: FormData) {
+    const validatedFields = CreateOtherService.safeParse({
+      otherServiceID: formData.get('otherServiceID'),
+      services: formData.get('services'),
+      customerTypeID: formData.get('customerTypeID'),
+      kindID: formData.get('kindID'),
+      customerCount: formData.get('customerCount')
+    });
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+          errors: validatedFields.error.flatten().fieldErrors,
+          message: 'Missing Fields. Failed to Create OtherService.',
+        };
+      }
+      // Prepare data for insertion into the database
+    const { services, customerTypeID, kindID, customerCount } = validatedFields.data;
+    const date = new Date().toISOString().split('T')[0];
+    try {
+        await sql`
+            INSERT INTO OtherService (Services, CustomerTypeID, KindID, CustomerCount)
+            VALUES (${services}, ${customerTypeID}, ${kindID}, ${customerCount})
+        `;
+      } catch (error) {
+        return {
+          message: 'Database Error: Failed to Create OtherService.',
+        };
+      }
+    revalidatePath('/dashboard/form/createOtherService');
+    redirect('/dashboard/createOtherService');
+  }
   const FormEmployeeSchema = z.object({
     employeeID: z.number(),
     lastName: z.string(),
@@ -296,7 +345,7 @@ const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true })
     if (!validatedFields.success) {
         return {
           errors: validatedFields.error.flatten().fieldErrors,
-          message: 'Missing Fields. Failed to Create MuseumService.',
+          message: 'Missing Fields. Failed to Create Employee.',
         };
       }
       // Prepare data for insertion into the database
@@ -319,11 +368,11 @@ const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true })
         `;
       } catch (error) {
         return {
-          message: 'Database Error: Failed to Create MuseumService.',
+          message: 'Database Error: Failed to Create Employee.',
         };
       }
-    revalidatePath('/dashboard/form/createMuseumService');
-    redirect('/dashboard/createMuseumService');
+    revalidatePath('/dashboard/form/createEmployee');
+    redirect('/dashboard/createEmployee');
   }
   const FormBuildingCapacitySchema = z.object({
     buildingCapacityID: z.number(),
@@ -367,9 +416,104 @@ const CreateBuildingCapacity = FormBuildingCapacitySchema.omit({ buildingCapacit
         `;
       } catch (error) {
         return {
-          message: 'Database Error: Failed to Create MuseumService.',
+          message: 'Database Error: Failed to Create BuildingCapacity.',
         };
       }
-    revalidatePath('/dashboard/form/createMuseumService');
-    redirect('/dashboard/createMuseumService');
+    revalidatePath('/dashboard/form/createBuildingCapacity');
+    redirect('/dashboard/createBuildingCapacity');
+  }
+  const FormIncomeSchema = z.object({
+    incomeID: z.number(),
+    incomeTypeID: z.number(),
+    incomePlan: z.number(),
+    incomePerformance: z.number(),
+  });
+  export type IncomeState = {
+    errors?: {
+      incomeID: number;
+      incomeTypeID: string;
+      incomePlan: number;
+      incomePerformance: number;
+    };
+    message?: string | null;
+  };
+const CreateIncome = FormIncomeSchema.omit({ incomeID: true, date: true });
+  export async function createIncome(prevState: IncomeState, formData: FormData) {
+    const validatedFields = CreateIncome.safeParse({
+      incomeID: formData.get('incomeID'),
+      incomeType: formData.get('incomeType'),
+      incomePlan: formData.get('incomePlan'),
+      incomePerformance: formData.get('incomePerformance'),
+    });
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+          errors: validatedFields.error.flatten().fieldErrors,
+          message: 'Missing Fields. Failed to Create Income.',
+        };
+      }
+      // Prepare data for insertion into the database
+    const {incomeTypeID, incomePlan, incomePerformance } = validatedFields.data;
+    try {
+        await sql`
+            INSERT INTO Income (IncomeTypeID, IncomePlan, IncomePerformance)
+            VALUES (${incomeTypeID},
+                    ${incomePlan},
+                    ${incomePerformance},
+              )
+        `;
+      } catch (error) {
+        return {
+          message: 'Database Error: Failed to Create Income.',
+        };
+      }
+    revalidatePath('/dashboard/form/createIncome');
+    redirect('/dashboard/createIncome');
+  } const FormExpensesSchema = z.object({
+    expensesID: z.number(),
+    expensesTypeID: z.number(),
+    expensesPlan: z.number(),
+    expensesPerformance: z.number(),
+  });
+  export type ExpensesState = {
+    errors?: {
+      expensesID: number;
+      expensesTypeID: string;
+      expensesPlan: number;
+      expensesPerformance: number;
+    };
+    message?: string | null;
+  };
+const CreateExpenses = FormExpensesSchema.omit({ expensesID: true, date: true });
+  export async function createExpenses(prevState: ExpensesState, formData: FormData) {
+    const validatedFields = CreateExpenses.safeParse({
+      expensesID: formData.get('expensesID'),
+      expensesType: formData.get('expensesType'),
+      expensesPlan: formData.get('expensesPlan'),
+      expensesPerformance: formData.get('expensesPerformance'),
+    });
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+          errors: validatedFields.error.flatten().fieldErrors,
+          message: 'Missing Fields. Failed to Create Expenses.',
+        };
+      }
+      // Prepare data for insertion into the database
+    const {expensesTypeID, expensesPlan, expensesPerformance } = validatedFields.data;
+    try {
+        await sql`
+            INSERT INTO Expenses (ExpensesTypeID, ExpensesPlan, ExpensesPerformance)
+            VALUES (${expensesTypeID},
+                    ${expensesPlan},
+                    ${expensesPerformance},
+              )
+        `;
+      } catch (error) {
+        return {
+          message: 'Database Error: Failed to Create Expenses.',
+        };
+      }
+    revalidatePath('/dashboard/form/createExpenses');
+    redirect('/dashboard/createExpenses');
   }

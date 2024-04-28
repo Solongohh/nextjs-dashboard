@@ -1,5 +1,5 @@
 'use client';
-import { ExhibitHistory } from '@/app/lib/definitions';
+import { Income } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -8,12 +8,12 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createExhibit } from '@/app/lib/actions';
+import { createIncome } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ exhibits }: { exhibits: ExhibitHistory[] }) {
+export default function Form({ incomes }: { incomes: Income[] }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createExhibit, initialState);
+  const [state, dispatch] = useFormState(createIncome, initialState);
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -33,17 +33,17 @@ export default function Form({ exhibits }: { exhibits: ExhibitHistory[] }) {
               <option value="" disabled>
                 Select a employee
               </option>
-              {exhibits.map((ExhibitHistory) => (
-                <option key={exhibits.ExhibitID} value={exhibits.exhibitID}>
-                  {exhibits.Name}
+              {incomes.map((Income) => (
+                <option key={incomes.IncomeID} value={incomes.IncomeID}>
+                  {incomes.IncomeTypeID}
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.customerId &&
-              state.errors.customerId.map((error: string) => (
+            {state.errors?.IncomeID &&
+              state.errors.IncomeID.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>

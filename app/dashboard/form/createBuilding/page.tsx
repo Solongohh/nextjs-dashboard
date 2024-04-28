@@ -1,5 +1,5 @@
 import Form from '@/app/ui/building/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Breadcrumbs from '@/app/ui/building/breadcrumbs';
 import { fetchBuildingCapacity } from '@/app/lib/data';
  
 export default async function Page() {

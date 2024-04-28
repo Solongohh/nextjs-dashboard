@@ -61,10 +61,10 @@ async function seedEmployee(client) {
         LastName VARCHAR(255) NOT NULL,
         FirstName VARCHAR(255) NOT NULL,
         Birthdate DATE FORMAT 'yyyy.mm.dd',
-        Sex ENUM ('F', 'M'),
+        Sex CHAR(1),
         Register Char(10),
         Phone Char(8),
-        Education ENUM('Боловсролгүй','Бага','Суурь','Бүрэн дунд','Техникийн болон мэргэжилтэн','Тусгай мэргэжлийн дунд','Дипломын болон бакалаврын дээд','Магистр','Доктор'),
+        Education VARCHAR,
         Occupation INTEGER NOT NULL.
         Stateprize BOOLEAN NOT NULL,
         Impairment BOOLEAN NOT NULL,
@@ -150,8 +150,8 @@ async function seedAddress(client) {
       CREATE TABLE IF NOT EXISTS Address (
         AddressID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         Country VARCHAR(255) NOT NULL,
-        Province ENUM('Архангай', 'Баян-өлгий', 'Баянхонгор', 'Булган', 'Говь-Алтай', 'Говьсүмбэр', 'Дархан-Уул', 'Дорноговь', 'Дорнод', 'Дундговь', 'Завхан', 'Орхон', 'Өвөрхангай', 'Өмнөговь', 'Сүхбаатар', 'Сэлэнгэ', 'Төв', 'Увс', 'Ховд', 'Хөвсгөл', 'Хэнтий'),
-        Disctrict ENUM('Багануур', 'Багахангай', 'Баянгол', 'Баянзүрх', 'Налайх', 'Сонгинохайрхан', 'Сүхбаатар', 'Хан-Уул', 'Чингэлтэй'),
+        Province VARCHAR,
+        Disctrict VARCHAR,
         Khoroo Varchar(255)
       );
     `;
@@ -189,8 +189,8 @@ async function seedExhibitHistory(client) {
         ExhibitHistoryID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         Name VARCHAR(255) NOT NULL,
-        Added_Exhibit ENUM('Худалдан авсан' | 'Бэлэг хандив' | 'Шилжүүлсэн' | 'Хайгуул малтлага, судалгаагаар'),
-        Rating ENUM('Түүх, соёлын хосгүй үнэт' | 'Түүх соёлын үнэт'),
+        Added_Exhibit VARCHAR,
+        Rating VARCHAR,
         Weight Double precision,
         Set VARCHAR(255),
         Restoration BOOLEAN NOT NULL,
@@ -198,7 +198,7 @@ async function seedExhibitHistory(client) {
         Exposed BOOLEAN NOT NULL,
         ExposedDetail VARCHAR(255),
         Definition VARCHAR(255),
-        Status ENUM('Хасагдсан үзмэр' | 'Дижитал хэлбэрт оруулсан' | 'Сэргээн засварласан' | 'Хуулбарлагдсан'),
+        Status VARCHAR,
         AddressID INTEGER NOT NULL
       );
     `;
@@ -269,7 +269,7 @@ async function seedExhibitType(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExhibitType (
         ExhibitTypeID INTEGER PRIMARY KEY,
-        ExhibitType ENUM('Байнгын үзүүллэг' | 'Түр үзэсгэлэн' | 'Байгалийн өвийн' | 'Археологийн' | 'Түүхийн' | 'Угсаатны зүйн' | 'Шашин шүтлэгийн' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран зураг' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Монгол зураг - шүтээн зураг' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран баримал' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - График' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Инстоляци' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Гар урлалын' | 'Урлаг, уран сайхны - Гэрэл зургийн'),
+        ExhibitType VARCHAR,
         ParentID INTEGER NOT NULL
       );
     `;
@@ -305,7 +305,8 @@ async function seedMuseumService(client) {
         MuseumServiceID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         CustomerTypeID INTEGER NOT NULL,
-        KindID  INTEGER NOT NULL
+        KindID  INTEGER NOT NULL,
+        CustomerCount INTEGER NOT NULL,
       );
     `;
 
@@ -315,8 +316,8 @@ async function seedMuseumService(client) {
     const insertedMuseumService = await Promise.all(
       MuseumServicees.map(async (MuseumService) => {
         return client.sql`
-        INSERT INTO MuseumService (ExhibitTypeID, CustomerTypeID, KindID)
-        VALUES (${MuseumService.exhibitTypeId}, ${MuseumService.customerTypeId}, ${MuseumService.kindId})
+        INSERT INTO MuseumService (ExhibitTypeID, CustomerTypeID, KindID, CustomerCount)
+        VALUES (${MuseumService.exhibitTypeId}, ${MuseumService.customerTypeId}, ${MuseumService.kindId}, ${MuseumService.customerCount})
         ON CONFLICT (MuseumServiceID) DO NOTHING;
       `;
       }),
@@ -340,8 +341,9 @@ async function seedOtherService(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS OtherService (
         OtherServiceID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        Services ENUM('Музейн боловсролын ажил','Сургалт семинар','Дугуйлан','Уралдаан, тэмцээн, наадам','Хурал, зөвлөгөөн','Үзэсгэлэн худалдаа','Зохион байгуулсан эвент / арга хэмжээ'),
+        Services VARCHAR,
         CustomerTypeID INTEGER NOT NULL,
+        CustomerCount INTEGER,
       );
     `;
 
@@ -351,8 +353,8 @@ async function seedOtherService(client) {
     const insertedOtherService = await Promise.all(
       OtherServicees.map(async (OtherService) => {
         return client.sql`
-        INSERT INTO OtherService (Services, CustomerTypeID)
-        VALUES (${OtherService.services}, ${OtherService.customerTypeId})
+        INSERT INTO OtherService (Services, CustomerTypeID, CustomerCount)
+        VALUES (${OtherService.services}, ${OtherService.customerTypeId}, ${OtherService.customerCount})
         ON CONFLICT (OtherServiceID) DO NOTHING;
       `;
       }),
@@ -376,7 +378,7 @@ async function seedKind(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Kind (
         KindID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        Kind ENUM('Үзэсгэлэнгийн танхимаар','Өөрийн','Хамтарсан','Гадны','Нүүдлийн үйлчилгээгээр','Дотоодод','Аймаг, нийслэл','Сум, дүүрэг','Баг, хороо','Гадаадад','Ази','Европ','Бусад'),
+        Kind VARCHAR,
         ParentID INTEGER NOT NULL,
       );
     `;
@@ -412,7 +414,7 @@ async function seedCustomerType(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS CustomerType (
         CustomerTypeID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        CustomerType ENUM('Хүүхэд','Төлбөргүй','Гадаад','Тусгай бүлгийн','Хөгжлийн бэрхшээлтэй','Бусад'),
+        CustomerType VARCHAR,
       );
     `;
 
@@ -447,7 +449,7 @@ async function seedBuildingCapacity(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
         BuildingCapacityID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        BuildingCapacity ENUM('Барилгын нийт талбай м2' | 'Барилгын нийт эзлэхүүн м3' | 'Тоглолтын тайзны эзлэхүүн м3' | 'Барилын нийт өрөөний тоо' | 'Барилгын давхрын тоо' | 'Цахилгаан шатны тоо' | 'Хөрөөны хөгжлийн бэрхшээлтэй иргэд явах тусгай замын тоо' | 'Хөгжлийн бэрхшээлтэй иргэдэд зориулсан ариун цэврийн өрөөний тоо' | 'Тэргэнцэртэй иргэдийн налуу замын тоо' | 'Тайзны тоо' | 'Суудлын тоо'),
+        BuildingCapacity VARCHAR,
         CapacityPlan INTEGER NOT NULL,
         CapacityPerformance INTEGER NOT NULL,
       );
@@ -521,7 +523,7 @@ async function seedExpensesType(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExpensesType (
         ExpensesTypeID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        ExpensesType ENUM ('Урсгал зардал','Соёлын үйл ажиллагааны зардал','Ном хэвлэл худалдан авах зардал','Уран бүтээлийн зардал','Түүх соёлын дурсгал зүйлийг хамгаалах зардал','Түүх соёлын дурсгалт зүйл сэргээн засварлах зардал','Гадаадад зохиогдох соёл урлагийн а/хэмжээний зардал','Сургалтын зардал','Үүнээс гадагш чиглэсэн сургалтын зардал','Соёл, олон нийтийн ажил зохион байгуулсан зардал','Үүнээс гадагш чиглэсэн арга хэмжээний зардал'),
+        ExpensesType VARCHAR,
         ParentID INTEGER NOT NULL,
       );
     `;
@@ -594,7 +596,7 @@ async function seedIncomeType(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS IncomeType (
         IncomeTypeID UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        IncomeType ENUM ('Үйл ажиллагааны орлого','Байгууллагын ажил үйлчилгээний (өөрийн) орлого','Түрээсийн орлого','Бусад орлого','Тусламж санхүүжилтийн орлого','Улсын төсвөөс','Орон нутгийн төсвөөс','Хөтөлбөр, төслийн санхүүжилт'),
+        IncomeType VARCHAR,
         ParentID INTEGER NOT NULL,
       );
     `;

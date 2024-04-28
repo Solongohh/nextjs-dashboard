@@ -20,7 +20,7 @@ export default function Form({ museumservices }: { museumservices: MuseumService
         {/* employee Name */}
         <div className="mb-4">
           <label htmlFor="employee" className="mb-2 block text-sm font-medium">
-            Choose employee
+            Choose MuseumService
           </label>
           <div className="relative">
             <select
@@ -31,7 +31,7 @@ export default function Form({ museumservices }: { museumservices: MuseumService
               aria-describedby="customer-error"
             >
               <option value="" disabled>
-                Select a employee
+                Select a MuseumService
               </option>
               {museumservices.map((MuseumService) => (
                 <option key={museumservices.MuseumServiceID} value={museumservices.MuseumServiceID}>

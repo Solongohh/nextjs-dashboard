@@ -1,5 +1,5 @@
-import Form from '@/app/ui/invoices/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Form from '@/app/ui/employee/create-form';
+import Breadcrumbs from '@/app/ui/employee/breadcrumbs';
 import { fetchEmployee } from '@/app/lib/data';
  
 export default async function Page() {
@@ -17,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={employee} />
+      <Form employees={employee} />
     </main>
   );
 }

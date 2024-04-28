@@ -189,7 +189,7 @@ import { sql } from '@vercel/postgres';
       // Artificially delay a response for demo purposes.
       // Don't do this in production :)
   
-      console.log('Fetching exhibit data...');
+      console.log('Fetching MuseumService data...');
       await new Promise((resolve) => setTimeout(resolve, 3000));
   
       const data = await sql<MuseumService>`
@@ -206,7 +206,34 @@ import { sql } from '@vercel/postgres';
       return data.rows;
     } catch (error) {
       console.error('Database Error:', error);
-      throw new Error('Failed to fetch exhibitType data.');
+      throw new Error('Failed to fetch MuseumService data.');
+    }
+  }
+  export async function fetchOtherService() {
+    // Add noStore() here to prevent the response from being cached.
+    // This is equivalent to in fetch(..., {cache: 'no-store'}).
+    noStore();
+    try {
+      // Artificially delay a response for demo purposes.
+      // Don't do this in production :)
+  
+      console.log('Fetching OtherService data...');
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+      const data = await sql<OtherService>`
+        SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
+        FROM OtherService M
+        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        JOIN Kind ON Kind.KindID = M.KindID;
+      `
+        ;
+  
+      console.log('Data fetch completed after 3 seconds.');
+  
+      return data.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch OtherService data.');
     }
   }
   export async function fetchIncome() {
