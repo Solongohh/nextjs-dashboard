@@ -33,9 +33,9 @@ export default async function UserTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{user.UserName}</p>
+                      <p>{user.UserMail}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{user.UserName}</p>
+                    <p className="text-sm text-gray-500">{user.UserMail}</p>
                   </div>
                   {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
@@ -95,7 +95,7 @@ export default async function UserTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{User.UserName}</p>
+                      <p>{User.UserMail}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
