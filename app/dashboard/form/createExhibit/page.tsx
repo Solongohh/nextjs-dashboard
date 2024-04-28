@@ -1,6 +1,6 @@
 import Form from '@/app/ui/exhibit/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchExhibitHistory } from '@/app/lib/data1';
+import { fetchExhibitHistory } from '@/app/lib/data';
  
 export default async function Page() {
   const exhibit = await fetchExhibitHistory();

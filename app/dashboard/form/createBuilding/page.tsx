@@ -1,6 +1,6 @@
 import Form from '@/app/ui/building/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchBuildingCapacity } from '@/app/lib/data1';
+import { fetchBuildingCapacity } from '@/app/lib/data';
  
 export default async function Page() {
   const buildingcapacity = await fetchBuildingCapacity();

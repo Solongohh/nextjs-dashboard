@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredUser } from '@/app/lib/data1';
+import { fetchFilteredUser } from '@/app/lib/data';
 import { User } from '@/app/lib/placeholder-data';
 
 export default async function UserTable({

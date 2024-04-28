@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createEmployee } from '@/app/lib/actionsStatistic';
+import { createEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
 export default function Form({ employees }: { employees: Employee[] }) {

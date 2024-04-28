@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createBuildingCapacity } from '@/app/lib/actionsStatistic';
+import { createBuildingCapacity } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
 export default function Form({ buildingcapacities }: { buildingcapacities: BuildingCapacity[] }) {

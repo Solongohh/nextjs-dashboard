@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createExhibit } from '@/app/lib/actionsStatistic';
+import { createExhibit } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
 export default function Form({ exhibits }: { exhibits: ExhibitHistory[] }) {

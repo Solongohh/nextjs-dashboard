@@ -1,6 +1,6 @@
 import Form from '@/app/ui/income/create-form';
 import Breadcrumbs from '@/app/ui/income/breadcrumbs';
-import { fetchIncome } from '@/app/lib/data1';
+import { fetchIncome } from '@/app/lib/data';
  
 export default async function Page() {
   const income = await fetchIncome();

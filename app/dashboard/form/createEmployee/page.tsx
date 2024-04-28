@@ -1,6 +1,6 @@
 import Form from '@/app/ui/invoices/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchEmployee } from '@/app/lib/data1';
+import { fetchEmployee } from '@/app/lib/data';
  
 export default async function Page() {
   const employee = await fetchEmployee();

@@ -1,6 +1,6 @@
 import Form from '@/app/ui/museumService/create-form';
 import Breadcrumbs from '@/app/ui/museumService/breadcrumbs';
-import { fetchMuseumService } from '@/app/lib/data1';
+import { fetchMuseumService } from '@/app/lib/data';
  
 export default async function Page() {
   const museumService = await fetchMuseumService();
