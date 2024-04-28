@@ -13,9 +13,10 @@ import { useFormState } from 'react-dom';
 
 export default function Form({ otherservices }: { otherservices: OtherService[] }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createOtherService, initialState);
+  // const [state, dispatch] = useFormState(createOtherService, initialState);
   return (
-    <form action={dispatch}>
+    // <form action={dispatch}>
+    <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* employee Name */}
         <div className="mb-4">
@@ -34,20 +35,20 @@ export default function Form({ otherservices }: { otherservices: OtherService[] 
                 Select a OtherService
               </option>
               {otherservices.map((OtherService) => (
-                <option key={otherservices.OtherServiceID} value={otherservices.OtherServiceID}>
+                <option key={OtherService.OtherServiceID} value={OtherService.OtherServiceID}>
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          <div id="employee-error" aria-live="polite" aria-atomic="true">
+          {/* <div id="employee-error" aria-live="polite" aria-atomic="true">
             {state.errors?.OtherServiceID &&
               state.errors.OtherServiceID.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
               ))}
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">

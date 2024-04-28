@@ -243,7 +243,7 @@ const CreateMuseumService = FormMuseumServiceSchema.omit({ museumServiceID: true
         };
       }
     revalidatePath('/dashboard/form/createMuseumService');
-    redirect('/dashboard/createMuseumService');
+    redirect('/dashboard/form/createMuseumService');
   }
   const FormOtherServiceSchema = z.object({
     otherServiceID: z.number(), 
@@ -292,7 +292,7 @@ const CreateOtherService = FormOtherServiceSchema.omit({ otherServiceID: true, d
         };
       }
     revalidatePath('/dashboard/form/createOtherService');
-    redirect('/dashboard/createOtherService');
+    redirect('/dashboard/form/createOtherService');
   }
   const FormEmployeeSchema = z.object({
     employeeID: z.number(),
@@ -372,7 +372,7 @@ const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true })
         };
       }
     revalidatePath('/dashboard/form/createEmployee');
-    redirect('/dashboard/createEmployee');
+    redirect('/dashboard/form/createEmployee');
   }
   const FormBuildingCapacitySchema = z.object({
     buildingCapacityID: z.number(),
@@ -420,7 +420,7 @@ const CreateBuildingCapacity = FormBuildingCapacitySchema.omit({ buildingCapacit
         };
       }
     revalidatePath('/dashboard/form/createBuildingCapacity');
-    redirect('/dashboard/createBuildingCapacity');
+    redirect('/dashboard/form/createBuildingCapacity');
   }
   const FormIncomeSchema = z.object({
     incomeID: z.number(),
@@ -468,7 +468,7 @@ const CreateIncome = FormIncomeSchema.omit({ incomeID: true, date: true });
         };
       }
     revalidatePath('/dashboard/form/createIncome');
-    redirect('/dashboard/createIncome');
+    redirect('/dashboard/form/createIncome');
   } const FormExpensesSchema = z.object({
     expensesID: z.number(),
     expensesTypeID: z.number(),
@@ -515,5 +515,5 @@ const CreateExpenses = FormExpensesSchema.omit({ expensesID: true, date: true })
         };
       }
     revalidatePath('/dashboard/form/createExpenses');
-    redirect('/dashboard/createExpenses');
+    redirect('/dashboard/form/createExpenses');
   }

@@ -73,11 +73,14 @@ export type MuseumService = {
   ExhibitTypeID: number;
   CustomerTypeID: number;
   KindID: number; 
+  CustomerCount: number;
 };
 export type OtherService = {
-  OtherService: number;
+  OtherServiceID: number;
   Services: 'Музейн боловсролын ажил' | 'Сургалт семинар' | 'Дугуйлан' | 'Уралдаан, тэмцээн, наадам' | 'Хурал, зөвлөгөөн' | 'Үзэсгэлэн худалдаа' | 'Зохион байгуулсан эвент / арга хэмжээ';
+  KindID: number;
   CustomerTypeID: number;
+  CustomerCount: number;
 };
 export type Kind = {
   KindID: number;
