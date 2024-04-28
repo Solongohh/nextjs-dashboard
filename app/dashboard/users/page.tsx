@@ -1,4 +1,4 @@
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/employee/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/user/table';
 import { CreateUser } from '@/app/ui/user/button';
