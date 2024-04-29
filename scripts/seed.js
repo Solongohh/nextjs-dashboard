@@ -10,7 +10,8 @@ const bcrypt = require('bcrypt');
 
 async function seedUsers(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Users (
@@ -21,7 +22,7 @@ async function seedUsers(client) {
         Password Varchar NOT NULL,
         EmployeeID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "users" table`);
 
@@ -51,9 +52,11 @@ async function seedUsers(client) {
     throw error;
   }
 }
+
 async function seedEmployee(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Employee (
@@ -70,7 +73,7 @@ async function seedEmployee(client) {
         Impairment BOOLEAN NOT NULL,
         AddressID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "Employee" table`);
 
@@ -98,36 +101,38 @@ async function seedEmployee(client) {
 
     return {
       createTable,
-      users: insertedEmployee,
+      employees: insertedEmployee,
     };
   } catch (error) {
     console.error('Error seeding employee:', error);
     throw error;
   }
 }
+
+
 async function seedOccupation(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "Occupation" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Occupation (
         OccupationID INTEGER PRIMARY KEY,
         Occupation VARCHAR(255) NOT NULL,
         ParentID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "Occupation" table`);
 
     // Insert data into the "Occupation" table
     const insertedOccupation = await Promise.all(
-      Occupation.map(async (occupation) => {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        return client.sql`
-        INSERT INTO Occupation (OccupationID, Occupation, ParentID)
-        VALUES (${occupation.occupationid}, ${occupation.occupation}, ${occupation.parentid})
-        ON CONFLICT (OccupationID) DO NOTHING;
-      `;
+      occupations.map(async (occupation) => {
+        return client.query(`
+          INSERT INTO Occupation ("OccupationID", "Occupation", "ParentID")
+          VALUES ($1, $2, $3)
+          ON CONFLICT ("OccupationID") DO NOTHING;
+        `, [occupation.OccupationID, occupation.Occupation, occupation.ParentID]);
       }),
     );
 
@@ -135,18 +140,22 @@ async function seedOccupation(client) {
 
     return {
       createTable,
-      users: insertedOccupation,
+      occupations: insertedOccupation,
     };
   } catch (error) {
     console.error('Error seeding Occupation:', error);
     throw error;
   }
 }
+
+
+
 async function seedAddress(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "Address" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Address (
         AddressID INTEGER PRIMARY KEY,
         Country VARCHAR(255) NOT NULL,
@@ -154,18 +163,18 @@ async function seedAddress(client) {
         Disctrict VARCHAR,
         Khoroo Varchar(255)
       );
-    `;
+    `);
 
     console.log(`Created "Address" table`);
 
     // Insert data into the "Address" table
     const insertedAddress = await Promise.all(
-      Addresses.map(async (address) => {
-        return client.sql`
-        INSERT INTO Address (Country, Province, District, Khoroo)
-        VALUES (${address.country}, ${address.province}, ${address.district}, ${address.khoroo})
-        ON CONFLICT (AddressID) DO NOTHING;
-      `;
+      addresses.map(async (address) => {
+        return client.query(`
+          INSERT INTO Address ("Country", "Province", "District", "Khoroo")
+          VALUES ($1, $2, $3, $4)
+          ON CONFLICT ("AddressID") DO NOTHING;
+        `, [address.Country, address.Province, address.District, address.Khoroo]);
       }),
     );
 
@@ -173,18 +182,23 @@ async function seedAddress(client) {
 
     return {
       createTable,
-      users: insertedAddress,
+      addresses: insertedAddress,
     };
   } catch (error) {
     console.error('Error seeding address:', error);
     throw error;
   }
 }
+
+
+
+
 async function seedExhibitHistory(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "ExhibitHistory" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExhibitHistory (
         ExhibitHistoryID INTEGER PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
@@ -201,7 +215,7 @@ async function seedExhibitHistory(client) {
         Status VARCHAR,
         AddressID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "ExhibitHistory" table`);
 
@@ -255,28 +269,32 @@ async function seedExhibitHistory(client) {
 
     return {
       createTable,
-      users: insertedExhibitHistory,
+      exhibitHistory: insertedExhibitHistory,
     };
   } catch (error) {
     console.error('Error seeding exhibithistory:', error);
     throw error;
   }
 }
+
+
+
 async function seedExhibitType(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "ExhibitType" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExhibitType (
         ExhibitTypeID INTEGER PRIMARY KEY,
         ExhibitType VARCHAR,
         ParentID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "ExhibitType" table`);
 
-    // Insert data into the "users" table
+    // Insert data into the "ExhibitType" table
     const insertedExhibitType = await Promise.all(
       ExhibitType.map(async (exhibittype) => {
         return client.sql`
@@ -289,18 +307,22 @@ async function seedExhibitType(client) {
 
     return {
       createTable,
-      users: insertedExhibitType,
+      exhibitTypes: insertedExhibitType,
     };
   } catch (error) {
     console.error('Error seeding exhibittype:', error);
     throw error;
   }
 }
+
+
+
 async function seedMuseumService(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "MuseumService" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS MuseumService (
         MuseumServiceID INTEGER PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
@@ -308,7 +330,7 @@ async function seedMuseumService(client) {
         KindID  INTEGER NOT NULL,
         CustomerCount INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "MuseumService" table`);
 
@@ -327,25 +349,28 @@ async function seedMuseumService(client) {
 
     return {
       createTable,
-      users: insertedMuseumService,
+      museumServices: insertedMuseumService,
     };
   } catch (error) {
     console.error('Error seeding MuseumService:', error);
     throw error;
   }
 }
+
+
 async function seedOtherService(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "OtherService" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS OtherService (
         OtherServiceID INTEGER PRIMARY KEY,
         Services VARCHAR,
         CustomerTypeID INTEGER NOT NULL,
         CustomerCount INTEGER
       );
-    `;
+    `);
 
     console.log(`Created "OtherService" table`);
 
@@ -364,35 +389,40 @@ async function seedOtherService(client) {
 
     return {
       createTable,
-      users: insertedOtherService,
+      otherServices: insertedOtherService,
     };
   } catch (error) {
     console.error('Error seeding OtherService:', error);
     throw error;
   }
 }
+
+
+
+
 async function seedKind(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "Kind" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Kind (
         KindID INTEGER PRIMARY KEY,
         Kind VARCHAR,
         ParentID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "Kind" table`);
 
     // Insert data into the "Kind" table
     const insertedKind = await Promise.all(
-      Kindes.map(async (Kind) => {
-        return client.sql`
-        INSERT INTO Kind (Kind, ParentID)
-        VALUES (${Kind.kind}, ${Kind.parentid})
-        ON CONFLICT (KindID) DO NOTHING;
-      `;
+      kinds.map(async (kind) => {
+        return client.query(`
+          INSERT INTO Kind ("Kind", "ParentID")
+          VALUES ($1, $2)
+          ON CONFLICT ("KindID") DO NOTHING;
+        `, [kind.Kind, kind.ParentID]);
       }),
     );
 
@@ -400,34 +430,38 @@ async function seedKind(client) {
 
     return {
       createTable,
-      users: insertedKind,
+      kinds: insertedKind,
     };
   } catch (error) {
     console.error('Error seeding Kind:', error);
     throw error;
   }
 }
+
+
+
 async function seedCustomerType(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "CustomerType" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS CustomerType (
         CustomerTypeID INTEGER PRIMARY KEY,
         CustomerType VARCHAR
       );
-    `;
+    `);
 
     console.log(`Created "CustomerType" table`);
 
     // Insert data into the "CustomerType" table
     const insertedCustomerType = await Promise.all(
-      CustomerTypees.map(async (CustomerType) => {
-        return client.sql`
-        INSERT INTO CustomerType (CustomerType)
-        VALUES (${CustomerType.CustomerType},)
-        ON CONFLICT (CustomerTypeID) DO NOTHING;
-      `;
+      customerTypes.map(async (customerType) => {
+        return client.query(`
+          INSERT INTO CustomerType ("CustomerType")
+          VALUES ($1)
+          ON CONFLICT ("CustomerTypeID") DO NOTHING;
+        `, [customerType.CustomerType]);
       }),
     );
 
@@ -435,36 +469,38 @@ async function seedCustomerType(client) {
 
     return {
       createTable,
-      users: insertedCustomerType,
+      customerTypes: insertedCustomerType,
     };
   } catch (error) {
     console.error('Error seeding CustomerType:', error);
     throw error;
   }
 }
+
 async function seedBuildingCapacity(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "BuildingCapacity" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
         BuildingCapacityID INTEGER PRIMARY KEY,
         BuildingCapacity VARCHAR,
         CapacityPlan INTEGER NOT NULL,
         CapacityPerformance INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "BuildingCapacity" table`);
 
     // Insert data into the "BuildingCapacity" table
     const insertedBuildingCapacity = await Promise.all(
-      BuildingCapacityes.map(async (BuildingCapacity) => {
-        return client.sql`
-        INSERT INTO BuildingCapacity (BuildingCapacity, CapacityPlan, CapacityPerformance)
-        VALUES (${BuildingCapacity.BuildingCapacity},${BuildingCapacity.capacityPlan},${BuildingCapacity.capacityPerformance})
-        ON CONFLICT (BuildingCapacityID) DO NOTHING;
-      `;
+      buildingCapacities.map(async (buildingCapacity) => {
+        return client.query(`
+          INSERT INTO BuildingCapacity ("BuildingCapacity", "CapacityPlan", "CapacityPerformance")
+          VALUES ($1, $2, $3)
+          ON CONFLICT ("BuildingCapacityID") DO NOTHING;
+        `, [buildingCapacity.BuildingCapacity, buildingCapacity.CapacityPlan, buildingCapacity.CapacityPerformance]);
       }),
     );
 
@@ -472,36 +508,39 @@ async function seedBuildingCapacity(client) {
 
     return {
       createTable,
-      users: insertedBuildingCapacity,
+      buildingCapacities: insertedBuildingCapacity,
     };
   } catch (error) {
     console.error('Error seeding BuildingCapacity:', error);
     throw error;
   }
 }
+
+
 async function seedExpenses(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "Expenses" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Expenses (
         ExpensesID INTEGER PRIMARY KEY,
         ExpensesTypeID INTEGER NOT NULL,
         ExpensesPlan INTEGER NOT NULL,
         ExpensesPerformance INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "Expenses" table`);
 
     // Insert data into the "Expenses" table
     const insertedExpenses = await Promise.all(
       Expenseses.map(async (Expenses) => {
-        return client.sql`
-        INSERT INTO Expenses (ExpensesType, ExpensesPlan, ExpensesPerformance)
-        VALUES (${Expenses.ExpensesType},${Expenses.expensesPlan},${Expenses.expensesPerformance})
-        ON CONFLICT (ExpensesID) DO NOTHING;
-      `;
+        return client.query(`
+          INSERT INTO Expenses ("ExpensesTypeID", "ExpensesPlan", "ExpensesPerformance")
+          VALUES ($1, $2, $3)
+          ON CONFLICT ("ExpensesID") DO NOTHING;
+        `, [Expenses.ExpensesTypeID, Expenses.ExpensesPlan, Expenses.ExpensesPerformance]);
       }),
     );
 
@@ -509,35 +548,38 @@ async function seedExpenses(client) {
 
     return {
       createTable,
-      users: insertedExpenses,
+      expenses: insertedExpenses,
     };
   } catch (error) {
     console.error('Error seeding Expenses:', error);
     throw error;
   }
 }
+
+
 async function seedExpensesType(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "ExpensesType" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS ExpensesType (
         ExpensesTypeID INTEGER PRIMARY KEY,
         ExpensesType VARCHAR,
         ParentID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "ExpensesType" table`);
 
     // Insert data into the "ExpensesType" table
     const insertedExpensesType = await Promise.all(
       ExpensesTypees.map(async (ExpensesType) => {
-        return client.sql`
-        INSERT INTO ExpensesType (ExpensesType, ParentID)
-        VALUES (${ExpensesType.ExpensesType},${ExpensesType.parentid})
-        ON CONFLICT (ExpensesTypeID) DO NOTHING;
-      `;
+        return client.query(`
+          INSERT INTO ExpensesType ("ExpensesType", "ParentID")
+          VALUES ($1, $2)
+          ON CONFLICT ("ExpensesTypeID") DO NOTHING;
+        `, [ExpensesType.ExpensesType, ExpensesType.parentid]);
       }),
     );
 
@@ -545,36 +587,39 @@ async function seedExpensesType(client) {
 
     return {
       createTable,
-      users: insertedExpensesType,
+      expensesTypes: insertedExpensesType,
     };
   } catch (error) {
     console.error('Error seeding ExpensesType:', error);
     throw error;
   }
 }
+
+
 async function seedIncome(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "Income" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS Income (
         IncomeID INTEGER PRIMARY KEY,
         IncomeTypeID INTEGER NOT NULL,
         IncomePlan INTEGER NOT NULL,
         IncomePerformance INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "Income" table`);
 
     // Insert data into the "Income" table
     const insertedIncome = await Promise.all(
       Incomees.map(async (Income) => {
-        return client.sql`
-        INSERT INTO Income (IncomeType, IncomePlan, IncomePerformance)
-        VALUES (${Income.IncomeType},${Income.IncomePlan},${Income.IncomePerformance})
-        ON CONFLICT (IncomeID) DO NOTHING;
-      `;
+        return client.query(`
+          INSERT INTO Income ("IncomeTypeID", "IncomePlan", "IncomePerformance")
+          VALUES ($1, $2, $3)
+          ON CONFLICT ("IncomeID") DO NOTHING;
+        `, [Income.IncomeTypeID, Income.IncomePlan, Income.IncomePerformance]);
       }),
     );
 
@@ -582,35 +627,39 @@ async function seedIncome(client) {
 
     return {
       createTable,
-      users: insertedIncome,
+      income: insertedIncome,
     };
   } catch (error) {
     console.error('Error seeding Income:', error);
     throw error;
   }
 }
+
+
+
 async function seedIncomeType(client) {
   try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
+    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
+    // Create the "IncomeType" table if it doesn't exist
+    const createTable = await client.query(`
       CREATE TABLE IF NOT EXISTS IncomeType (
         IncomeTypeID INTEGER PRIMARY KEY,
         IncomeType VARCHAR,
         ParentID INTEGER NOT NULL
       );
-    `;
+    `);
 
     console.log(`Created "IncomeType" table`);
 
     // Insert data into the "IncomeType" table
     const insertedIncomeType = await Promise.all(
       IncomeTypees.map(async (IncomeType) => {
-        return client.sql`
-        INSERT INTO IncomeType (IncomeType, ParentID)
-        VALUES (${IncomeType.IncomeType},${IncomeType.parentid})
-        ON CONFLICT (IncomeTypeID) DO NOTHING;
-      `;
+        return client.query(`
+          INSERT INTO IncomeType ("IncomeType", "ParentID")
+          VALUES ($1, $2)
+          ON CONFLICT ("IncomeTypeID") DO NOTHING;
+        `, [IncomeType.IncomeType, IncomeType.ParentID]);
       }),
     );
 
@@ -618,7 +667,7 @@ async function seedIncomeType(client) {
 
     return {
       createTable,
-      users: insertedIncomeType,
+      incomeType: insertedIncomeType,
     };
   } catch (error) {
     console.error('Error seeding IncomeType:', error);
