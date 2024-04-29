@@ -39,12 +39,13 @@ export type Employee = {
   BirthDate: Date;
   Sex: 'F' | 'M';
   Register: string[10];
-  Address: string;
   Phone: number;
   Education: 'Боловсролгүй' | 'Бага' | 'Суурь' | 'Бүрэн дунд' | 'Техникийн болон мэргэжилтэн' | 'Тусгай мэргэжлийн дунд' | 'Дипломын болон бакалаврын дээд' | 'Магистр' | 'Доктор';
-  Occupation: string;
+  OccupationID: number;
   StatePrize: boolean;
   Impairment: boolean;
+  Address: number;
+  DepartmentID: number;
 };
 export type EmployeeTable = {
   EmployeeID: number;
@@ -53,12 +54,12 @@ export type EmployeeTable = {
   BirthDate: Date;
   Sex: 'F' | 'M';
   Register: string[10];
-  Address: string;
   Phone: number;
   Education: 'Боловсролгүй' | 'Бага' | 'Суурь' | 'Бүрэн дунд' | 'Техникийн болон мэргэжилтэн' | 'Тусгай мэргэжлийн дунд' | 'Дипломын болон бакалаврын дээд' | 'Магистр' | 'Доктор';
   Occupation: string;
   StatePrize: boolean;
   Impairment: boolean;
+  Address: number;
 };
 export type Occupation = {
   OccupationID: number;
@@ -68,14 +69,10 @@ export type Occupation = {
 export type Address = {
   AddressID: number;
   Country: string;
-  Province: 'Архангай' | 'Баян-өлгий' | 'Баянхонгор' | 'Булган' | 'Говь-Алтай' | 'Говьсүмбэр' | 'Дархан-Уул' | 'Дорноговь' | 'Дорнод' | 'Дундговь' | 'Завхан' | 'Орхон' | 'Өвөрхангай' | 'Өмнөговь' | 'Сүхбаатар' | 'Сэлэнгэ' | 'Төв' | 'Увс' | 'Ховд' | 'Хөвсгөл' | 'Хэнтий';
-  District: 'Багануур' | 'Багахангай' | 'Баянгол' | 'Баянзүрх' | 'Налайх' | 'Сонгинохайрхан' | 'Сүхбаатар' | 'Хан-Уул' | 'Чингэлтэй';
+  Province: 'Архангай' | 'Баян-өлгий' | 'Баянхонгор' | 'Булган' | 'Говь-Алтай' | 'Говьсүмбэр' | 'Дархан-Уул' | 'Дорноговь' | 'Дорнод' | 'Дундговь' | 'Завхан' | 'Орхон' | 'Өвөрхангай' | 'Өмнөговь' | 'Сүхбаатар' | 'Сэлэнгэ' | 'Төв' | 'Увс' | 'Ховд' | 'Хөвсгөл' | 'Хэнтий' | '-';
+  District: 'Багануур' | 'Багахангай' | 'Баянгол' | 'Баянзүрх' | 'Налайх' | 'Сонгинохайрхан' | 'Сүхбаатар' | 'Хан-Уул' | 'Чингэлтэй' | '-';
   Khoroo: string;
 };
-// export type District = {
-//   DistrictID: number;
-//   District: 'Багануур' | 'Багахангай' | 'Баянгол' | 'Баянзүрх' | 'Налайх' | 'Сонгинохайрхан' | 'Сүхбаатар' | 'Хан-Уул' | 'Чингэлтэй';
-// };
 export type ExhibitHistory = {
   ExhibitID: number;
   ExhibitTypeID: number;
@@ -176,72 +173,25 @@ export type Incometype = {
   IncomeType: 'Үйл ажиллагааны орлого' | 'Байгууллагын ажил үйлчилгээний (өөрийн) орлого' | 'Түрээсийн орлого' | 'Бусад орлого' | 'Тусламж санхүүжилтийн орлого' | 'Улсын төсвөөс' | 'Орон нутгийн төсвөөс' | 'Хөтөлбөр, төслийн санхүүжилт';
   ParentID: number;
 }
-// export type Invoice = {
-//   id: string;
-//   customer_id: string;
-//   amount: number;
-//   date: string;
-//   // In TypeScript, this is called a string union type.
-//   // It means that the 'status' property can only be one of the two strings: 'pending' or 'paid'.
-//   status: 'pending' | 'paid';
-// };
-// export type Revenue = {
-//   month: string;
-//   revenue: number;
-// };
-
-// export type LatestInvoice = {
-//   id: string;
-//   name: string;
-//   image_url: string;
-//   email: string;
-//   amount: string;
-// };
-
-// // The database returns a number for amount, but we later format it to a string with the formatCurrency function
-// export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
-//   amount: number;
-// };
-
-// export type InvoicesTable = {
-//   id: string;
-//   customer_id: string;
-//   name: string;
-//   email: string;
-//   image_url: string;
-//   date: string;
-//   amount: number;
-//   status: 'pending' | 'paid';
-// };
-
-// export type CustomersTableType = {
-//   id: string;
-//   name: string;
-//   email: string;
-//   image_url: string;
-//   total_invoices: number;
-//   total_pending: number;
-//   total_paid: number;
-// };
-
-// export type FormattedCustomersTable = {
-//   id: string;
-//   name: string;
-//   email: string;
-//   image_url: string;
-//   total_invoices: number;
-//   total_pending: string;
-//   total_paid: string;
-// };
-
-// export type CustomerField = {
-//   id: string;
-//   name: string;
-// };
-
-// export type InvoiceForm = {
-//   id: string;
-//   customer_id: string;
-//   amount: number;
-//   status: 'pending' | 'paid';
-// };
+export type Department = {
+  DepartmentID: number;
+  DepartmentName: string;
+  Employees: Employee[];
+}
+export type Organisation = {
+  OrganisationID: number;
+  OrganisationName: string;
+  Branch: Branch[];
+  Department: Department[];
+}
+export type Branch = {
+  BranchID: number;
+  BranchName: string;
+  AddressID: number;
+  OrganisationID: number
+}
+export type ServiceAddress = {
+  ServiceAddressID: number;
+  MuseumServiceID: number; 
+  AddressID: number;
+}

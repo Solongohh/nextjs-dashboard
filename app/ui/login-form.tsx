@@ -7,7 +7,7 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from '@/app/ui/button';
+import { Login } from '@/app/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/app/lib/actions';
  
@@ -16,9 +16,9 @@ export default function LoginForm() {
  
   return (
     <form action={dispatch} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please log in to continue.
+      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8 ">
+        <h1 className={`${lusitana.className} mb-3 text-2xl flex justify-center`}>
+          Log in
         </h1>
         <div className="w-full">
           <div>
@@ -34,7 +34,7 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                // placeholder="Enter your email address"
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -53,7 +53,7 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                // placeholder="Enter password"
                 required
                 minLength={6}
               />
@@ -83,8 +83,8 @@ function LoginButton() {
   const { pending } = useFormStatus();
  
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
-      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </Button>
+    <Login className="mt-4 w-full" aria-disabled={pending}>
+      Log in 
+    </Login>
   );
 }

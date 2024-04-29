@@ -17,3 +17,16 @@ export function Button({ children, className, ...rest }: ButtonProps) {
     </button>
   );
 }
+export function Login({ children, className, ...rest }: ButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={clsx(
+        'flex h-[48px] grow items-center justify-center rounded-full text-white p-3 text-sm font-medium bg-blue-400 hover:text-gray-200 md:flex-none md:p-2 md:px-3',
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+}

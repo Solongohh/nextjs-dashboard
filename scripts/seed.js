@@ -1,11 +1,29 @@
 const { db } = require('@vercel/postgres');
 const {
-  invoices,
-  customers,
-  revenue,
-  users,
+  Users,
+  Employee,
+  Department,
+  Organisation,
+  Branch,
+  OtherService,
+  ExhibitHistory,
+  ExhibitType,
+  Income,
+  IncomeType,
+  Expenses,
+  ExpensesType,
+  MuseumService,
+  Kind,
+  Occupation,
+  CustomerType,
+  BuildingCapacity,
+  Address,
+  AuthenticationHistory,
+  ServiceAddress
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
+
+// const { Employee, MuseumService, OtherService } = require('@/app/ui/form/buttons.jsx');
 // const { Employee } = require('@/app/ui/form/buttons.tsx');
 
 async function seedUsers(client) {
@@ -16,8 +34,8 @@ async function seedUsers(client) {
       CREATE TABLE IF NOT EXISTS Users (
         UserID INTEGER PRIMARY KEY,
         UserRole VARCHAR(255) NOT NULL,
-        UserName VARCHAR(255) NOT NULL,
-        UserPhone INTEGER NOT NULL,
+        UserMail VARCHAR(255) NOT NULL,
+        UserPhone CHAR(8) NOT NULL,
         Password Varchar NOT NULL,
         EmployeeID INTEGER NOT NULL
       );
@@ -27,14 +45,11 @@ async function seedUsers(client) {
 
     // Insert data into the "users" table
     const insertedUsers = await Promise.all(
-      users.map(async (user) => {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+      Users.map(async (user) => {
+        const hashedPassword = await bcrypt.hash(user.Password, 10);
         return client.sql`
-        INSERT INTO Users (UserRole, UserName, UserPhone, Password, EmployeeID)
-        VALUES (${users.role}, ${user.name}, ${user.phone}, ${hashedPassword},
-          ( SELECT EmployeeID
-            FROM Employee
-            WHERE ${user.employeeID}))
+        INSERT INTO Users (UserID, UserRole, UserMail, UserPhone, Password, EmployeeID)
+        VALUES (${user.UserID}, ${user.UserRole}, ${user.UserMail}, ${user.UserPhone}, ${hashedPassword}, ${user.EmployeeID})
         ON CONFLICT (UserID) DO NOTHING;
       `;
       }),
@@ -44,7 +59,7 @@ async function seedUsers(client) {
 
     return {
       createTable,
-      users: insertedUsers,
+      Users: insertedUsers,
     };
   } catch (error) {
     console.error('Error seeding users:', error);
@@ -54,7 +69,7 @@ async function seedUsers(client) {
 async function seedEmployee(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
+    // Create the "Employee" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Employee (
         EmployeeID INTEGER PRIMARY KEY,
@@ -65,10 +80,11 @@ async function seedEmployee(client) {
         Register Char(10),
         Phone Char(8),
         Education VARCHAR,
-        Occupation INTEGER NOT NULL,
+        OccupationID INTEGER,
         Stateprize BOOLEAN NOT NULL,
         Impairment BOOLEAN NOT NULL,
-        AddressID INTEGER NOT NULL
+        AddressID INTEGER NOT NULL,
+        DepartmentID INTEGER NOT NULL
       );
     `;
 
@@ -78,17 +94,8 @@ async function seedEmployee(client) {
     const insertedEmployee = await Promise.all(
       Employee.map(async (employee) => {
         return client.sql`
-        INSERT INTO Employee (LastName, FirstName, Birthdate, Sex, Register, Phone, Education, OccupationID, Stateprize, Impairment, AddressID)
-        VALUES (${employee.lastname}, ${employee.firstname}, ${employee.birthdate}, ${employee.sex},${employee.register},${employee.phone},${employee.education},${employee.occupationID},${employee.stateprize},${employee.impairment},
-        (
-          SELECT AddressID
-          FROM Address
-          WHERE Country = ${address.country}
-            AND Province = ${address.province}
-            AND District = ${address.district}
-            AND Khoroo = ${address.khoroo}
-          )
-        )
+        INSERT INTO Employee (EmployeeID, LastName, FirstName, Birthdate, Sex, Register, Phone, Education, OccupationID, Stateprize, Impairment, AddressID, DepartmentID)
+        VALUES (${employee.EmployeeID}, ${employee.LastName}, ${employee.FirstName}, ${employee.BirthDate}, ${employee.Sex},${employee.Register},${employee.Phone},${employee.Education},${employee.OccupationID},${employee.Stateprize},${employee.Impairment}, ${employee.AddressID}, ${employee.DepartmentID})
         ON CONFLICT (EmployeeID) DO NOTHING;
       `;
       }),
@@ -98,7 +105,7 @@ async function seedEmployee(client) {
 
     return {
       createTable,
-      users: insertedEmployee,
+      Employee: insertedEmployee,
     };
   } catch (error) {
     console.error('Error seeding employee:', error);
@@ -113,7 +120,7 @@ async function seedOccupation(client) {
       CREATE TABLE IF NOT EXISTS Occupation (
         OccupationID INTEGER PRIMARY KEY,
         Occupation VARCHAR(255) NOT NULL,
-        ParentID INTEGER NOT NULL
+        ParentID INTEGER
       );
     `;
 
@@ -122,10 +129,9 @@ async function seedOccupation(client) {
     // Insert data into the "Occupation" table
     const insertedOccupation = await Promise.all(
       Occupation.map(async (occupation) => {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
         INSERT INTO Occupation (OccupationID, Occupation, ParentID)
-        VALUES (${occupation.occupationid}, ${occupation.occupation}, ${occupation.parentid})
+        VALUES (${occupation.OccupationID}, ${occupation.Occupation}, ${occupation.Parentid})
         ON CONFLICT (OccupationID) DO NOTHING;
       `;
       }),
@@ -135,7 +141,7 @@ async function seedOccupation(client) {
 
     return {
       createTable,
-      users: insertedOccupation,
+      Occupation: insertedOccupation,
     };
   } catch (error) {
     console.error('Error seeding Occupation:', error);
@@ -151,7 +157,7 @@ async function seedAddress(client) {
         AddressID INTEGER PRIMARY KEY,
         Country VARCHAR(255) NOT NULL,
         Province VARCHAR,
-        Disctrict VARCHAR,
+        District VARCHAR,
         Khoroo Varchar(255)
       );
     `;
@@ -160,11 +166,11 @@ async function seedAddress(client) {
 
     // Insert data into the "Address" table
     const insertedAddress = await Promise.all(
-      Addresses.map(async (address) => {
+      Address.map(async (address) => {
         return client.sql`
-        INSERT INTO Address (Country, Province, District, Khoroo)
-        VALUES (${address.country}, ${address.province}, ${address.district}, ${address.khoroo})
-        ON CONFLICT (AddressID) DO NOTHING;
+        INSERT INTO Address (AddressID, Country, Province, District, Khoroo)
+        VALUES (${address.AddressID}, ${address.Country}, ${address.Province}, ${address.District}, ${address.Khoroo})
+        ON CONFLICT (AddressID) DO NOTHING
       `;
       }),
     );
@@ -173,7 +179,7 @@ async function seedAddress(client) {
 
     return {
       createTable,
-      users: insertedAddress,
+      Address: insertedAddress,
     };
   } catch (error) {
     console.error('Error seeding address:', error);
@@ -186,17 +192,13 @@ async function seedExhibitHistory(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExhibitHistory (
-        ExhibitHistoryID INTEGER PRIMARY KEY,
+        ExhibitID INTEGER PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         Name VARCHAR(255) NOT NULL,
         Added_Exhibit VARCHAR,
         Rating VARCHAR,
         Weight Double precision,
         Set VARCHAR(255),
-        Restoration BOOLEAN NOT NULL,
-        RestorationDetail VARCHAR(255),
-        Exposed BOOLEAN NOT NULL,
-        ExposedDetail VARCHAR(255),
         Definition VARCHAR(255),
         Status VARCHAR,
         AddressID INTEGER NOT NULL
@@ -210,42 +212,30 @@ async function seedExhibitHistory(client) {
       ExhibitHistory.map(async (exhibithistory) => {
         return client.sql`
         INSERT INTO ExhibitHistory (
+          ExhibitID,
           ExhibitTypeID,
           Name,
           Added_Exhibit,
           Rating,
           Weight,
           Set,
-          Restoration,
-          RestorationDetail,
-          Exposed,
-          ExposedDetail,
           Definition,
           Status,
           AddressID
       )
       VALUES (
-          ${exhibithistory.exhibitTypeId},     
-          ${exhibithistory.name}, 
-          ${exhibithistory.added_exhibit},
-          ${exhibithistory.rating},               
-          ${exhibithistory.weight},                 
-          ${exhibithistory.set},                 
-          ${exhibithistory.restoration},               
-          ${exhibithistory.restorationDetail},       
-          ${exhibithistory.exposed},                 
-          ${exhibithistory.exposedDetail},         
-          ${exhibithistory.definition},         
-          ${exhibithistory.status},
-          (
-              SELECT AddressID
-              FROM Address
-              WHERE Country = ${address.country}
-                AND Province = ${address.province}
-                AND District = ${address.district}
-                AND Khoroo = ${address.khoroo}
-          ) 
-      );
+          ${exhibithistory.ExhibitID},
+          ${exhibithistory.ExhibitTypeID},     
+          ${exhibithistory.Name}, 
+          ${exhibithistory.Added_Exhibit},
+          ${exhibithistory.Rating},               
+          ${exhibithistory.Weight},                 
+          ${exhibithistory.Set},         
+          ${exhibithistory.Definition},         
+          ${exhibithistory.Status},
+          ${exhibithistory.AddressID}
+      )
+      ON CONFLICT (ExhibitID) DO NOTHING;
 
       `;
       }),
@@ -255,7 +245,7 @@ async function seedExhibitHistory(client) {
 
     return {
       createTable,
-      users: insertedExhibitHistory,
+      ExhibitHistory: insertedExhibitHistory,
     };
   } catch (error) {
     console.error('Error seeding exhibithistory:', error);
@@ -276,11 +266,13 @@ async function seedExhibitType(client) {
 
     console.log(`Created "ExhibitType" table`);
 
-    // Insert data into the "users" table
+    // Insert data into the "exhibittype" table
     const insertedExhibitType = await Promise.all(
       ExhibitType.map(async (exhibittype) => {
         return client.sql`
-        INSERT INTO ExhibitType
+        INSERT INTO ExhibitType (ExhibitTypeID, ExhibitType, ParentID)
+        Values (${exhibittype.ExhibitTypeID}, ${exhibittype.ExhibitType}, ${exhibittype.ParentID})
+        ON CONFLICT (ExhibitTypeID) DO NOTHING;
       `;
       }),
     );
@@ -289,7 +281,7 @@ async function seedExhibitType(client) {
 
     return {
       createTable,
-      users: insertedExhibitType,
+      ExhibitType: insertedExhibitType,
     };
   } catch (error) {
     console.error('Error seeding exhibittype:', error);
@@ -305,7 +297,7 @@ async function seedMuseumService(client) {
         MuseumServiceID INTEGER PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         CustomerTypeID INTEGER NOT NULL,
-        KindID  INTEGER NOT NULL,
+        KindID INTEGER NOT NULL,
         CustomerCount INTEGER NOT NULL
       );
     `;
@@ -314,12 +306,12 @@ async function seedMuseumService(client) {
 
     // Insert data into the "MuseumService" table
     const insertedMuseumService = await Promise.all(
-      MuseumServicees.map(async (MuseumService) => {
+      MuseumService.map(async (MuseumService) => {
         return client.sql`
-        INSERT INTO MuseumService (ExhibitTypeID, CustomerTypeID, KindID, CustomerCount)
-        VALUES (${MuseumService.exhibitTypeId}, ${MuseumService.customerTypeId}, ${MuseumService.kindId}, ${MuseumService.customerCount})
+        INSERT INTO MuseumService (MuseumServiceID, ExhibitTypeID, CustomerTypeID, KindID, CustomerCount)
+        VALUES (${MuseumService.MuseumServiceID}, ${MuseumService.ExhibitTypeID}, ${MuseumService.CustomerTypeID}, ${MuseumService.KindID}, ${MuseumService.CustomerCount})
         ON CONFLICT (MuseumServiceID) DO NOTHING;
-      `;
+        `;
       }),
     );
 
@@ -327,7 +319,7 @@ async function seedMuseumService(client) {
 
     return {
       createTable,
-      users: insertedMuseumService,
+      MuseumService: insertedMuseumService,
     };
   } catch (error) {
     console.error('Error seeding MuseumService:', error);
@@ -342,8 +334,9 @@ async function seedOtherService(client) {
       CREATE TABLE IF NOT EXISTS OtherService (
         OtherServiceID INTEGER PRIMARY KEY,
         Services VARCHAR,
+        KindID INTEGER NOT NULL,
         CustomerTypeID INTEGER NOT NULL,
-        CustomerCount INTEGER
+        CustomerCount INTEGER NOT NULL
       );
     `;
 
@@ -351,12 +344,12 @@ async function seedOtherService(client) {
 
     // Insert data into the "OtherService" table
     const insertedOtherService = await Promise.all(
-      OtherServicees.map(async (OtherService) => {
+      OtherService.map(async (OtherService) => {
         return client.sql`
-        INSERT INTO OtherService (Services, CustomerTypeID, CustomerCount)
-        VALUES (${OtherService.services}, ${OtherService.customerTypeId}, ${OtherService.customerCount})
+        INSERT INTO OtherService (OtherServiceID, Services, KindID, CustomerTypeID, CustomerCount)
+        VALUES (${OtherService.OtherServiceID}, ${OtherService.Services}, ${OtherService.KindID}, ${OtherService.CustomerTypeID}, ${OtherService.CustomerCount})
         ON CONFLICT (OtherServiceID) DO NOTHING;
-      `;
+        `;
       }),
     );
 
@@ -364,7 +357,7 @@ async function seedOtherService(client) {
 
     return {
       createTable,
-      users: insertedOtherService,
+      OtherService: insertedOtherService,
     };
   } catch (error) {
     console.error('Error seeding OtherService:', error);
@@ -387,10 +380,10 @@ async function seedKind(client) {
 
     // Insert data into the "Kind" table
     const insertedKind = await Promise.all(
-      Kindes.map(async (Kind) => {
+      Kind.map(async (Kind) => {
         return client.sql`
-        INSERT INTO Kind (Kind, ParentID)
-        VALUES (${Kind.kind}, ${Kind.parentid})
+        INSERT INTO Kind (KindID, Kind, ParentID)
+        VALUES (${Kind.KindID}, ${Kind.Kind}, ${Kind.ParentID})
         ON CONFLICT (KindID) DO NOTHING;
       `;
       }),
@@ -400,7 +393,7 @@ async function seedKind(client) {
 
     return {
       createTable,
-      users: insertedKind,
+      Kind: insertedKind,
     };
   } catch (error) {
     console.error('Error seeding Kind:', error);
@@ -422,10 +415,10 @@ async function seedCustomerType(client) {
 
     // Insert data into the "CustomerType" table
     const insertedCustomerType = await Promise.all(
-      CustomerTypees.map(async (CustomerType) => {
+      CustomerType.map(async (CustomerType) => {
         return client.sql`
-        INSERT INTO CustomerType (CustomerType)
-        VALUES (${CustomerType.CustomerType},)
+        INSERT INTO CustomerType (CustomerTypeID, CustomerType)
+        VALUES (${CustomerType.CustomerTypeID}, ${CustomerType.CustomerType})
         ON CONFLICT (CustomerTypeID) DO NOTHING;
       `;
       }),
@@ -435,7 +428,7 @@ async function seedCustomerType(client) {
 
     return {
       createTable,
-      users: insertedCustomerType,
+      CustomerType: insertedCustomerType,
     };
   } catch (error) {
     console.error('Error seeding CustomerType:', error);
@@ -450,8 +443,8 @@ async function seedBuildingCapacity(client) {
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
         BuildingCapacityID INTEGER PRIMARY KEY,
         BuildingCapacity VARCHAR,
-        CapacityPlan INTEGER NOT NULL,
-        CapacityPerformance INTEGER NOT NULL
+        CapacityPlan DOUBLE precision NOT NULL,
+        CapacityPerformance DOUBLE precision NOT NULL
       );
     `;
 
@@ -459,12 +452,12 @@ async function seedBuildingCapacity(client) {
 
     // Insert data into the "BuildingCapacity" table
     const insertedBuildingCapacity = await Promise.all(
-      BuildingCapacityes.map(async (BuildingCapacity) => {
+      BuildingCapacity.map(async (BuildingCapacity) => {
         return client.sql`
-        INSERT INTO BuildingCapacity (BuildingCapacity, CapacityPlan, CapacityPerformance)
-        VALUES (${BuildingCapacity.BuildingCapacity},${BuildingCapacity.capacityPlan},${BuildingCapacity.capacityPerformance})
+        INSERT INTO BuildingCapacity (BuildingCapacityID, BuildingCapacity, CapacityPlan, CapacityPerformance)
+        VALUES (${BuildingCapacity.BuildingCapacityID}, ${BuildingCapacity.BuildingCapacity},${BuildingCapacity.CapacityPlan},${BuildingCapacity.CapacityPerformance})
         ON CONFLICT (BuildingCapacityID) DO NOTHING;
-      `;
+        `;
       }),
     );
 
@@ -472,7 +465,7 @@ async function seedBuildingCapacity(client) {
 
     return {
       createTable,
-      users: insertedBuildingCapacity,
+      BuildingCapacity: insertedBuildingCapacity,
     };
   } catch (error) {
     console.error('Error seeding BuildingCapacity:', error);
@@ -487,8 +480,8 @@ async function seedExpenses(client) {
       CREATE TABLE IF NOT EXISTS Expenses (
         ExpensesID INTEGER PRIMARY KEY,
         ExpensesTypeID INTEGER NOT NULL,
-        ExpensesPlan INTEGER NOT NULL,
-        ExpensesPerformance INTEGER NOT NULL
+        ExpensesPlan DOUBLE precision NOT NULL,
+        ExpensesPerformance DOUBLE precision NOT NULL
       );
     `;
 
@@ -496,10 +489,10 @@ async function seedExpenses(client) {
 
     // Insert data into the "Expenses" table
     const insertedExpenses = await Promise.all(
-      Expenseses.map(async (Expenses) => {
+      Expenses.map(async (Expenses) => {
         return client.sql`
-        INSERT INTO Expenses (ExpensesType, ExpensesPlan, ExpensesPerformance)
-        VALUES (${Expenses.ExpensesType},${Expenses.expensesPlan},${Expenses.expensesPerformance})
+        INSERT INTO Expenses (ExpensesID, ExpensesTypeID, ExpensesPlan, ExpensesPerformance)
+        VALUES (${Expenses.ExpensesTypeID},${Expenses.ExpensesTypeID},${Expenses.ExpensesPlan},${Expenses.ExpensesPerformance})
         ON CONFLICT (ExpensesID) DO NOTHING;
       `;
       }),
@@ -509,7 +502,7 @@ async function seedExpenses(client) {
 
     return {
       createTable,
-      users: insertedExpenses,
+      Expenses: insertedExpenses,
     };
   } catch (error) {
     console.error('Error seeding Expenses:', error);
@@ -532,10 +525,10 @@ async function seedExpensesType(client) {
 
     // Insert data into the "ExpensesType" table
     const insertedExpensesType = await Promise.all(
-      ExpensesTypees.map(async (ExpensesType) => {
+      ExpensesType.map(async (ExpensesType) => {
         return client.sql`
-        INSERT INTO ExpensesType (ExpensesType, ParentID)
-        VALUES (${ExpensesType.ExpensesType},${ExpensesType.parentid})
+        INSERT INTO ExpensesType (ExpensesTypeID, ExpensesType, ParentID)
+        VALUES (${ExpensesType.ExpensesTypeID}, ${ExpensesType.ExpensesType},${ExpensesType.ParentID})
         ON CONFLICT (ExpensesTypeID) DO NOTHING;
       `;
       }),
@@ -545,7 +538,7 @@ async function seedExpensesType(client) {
 
     return {
       createTable,
-      users: insertedExpensesType,
+      ExpensesType: insertedExpensesType,
     };
   } catch (error) {
     console.error('Error seeding ExpensesType:', error);
@@ -560,8 +553,8 @@ async function seedIncome(client) {
       CREATE TABLE IF NOT EXISTS Income (
         IncomeID INTEGER PRIMARY KEY,
         IncomeTypeID INTEGER NOT NULL,
-        IncomePlan INTEGER NOT NULL,
-        IncomePerformance INTEGER NOT NULL
+        IncomePlan DOUBLE precision NOT NULL,
+        IncomePerformance DOUBLE precision NOT NULL
       );
     `;
 
@@ -569,10 +562,10 @@ async function seedIncome(client) {
 
     // Insert data into the "Income" table
     const insertedIncome = await Promise.all(
-      Incomees.map(async (Income) => {
+      Income.map(async (Income) => {
         return client.sql`
-        INSERT INTO Income (IncomeType, IncomePlan, IncomePerformance)
-        VALUES (${Income.IncomeType},${Income.IncomePlan},${Income.IncomePerformance})
+        INSERT INTO Income (IncomeID, IncomeTypeID, IncomePlan, IncomePerformance)
+        VALUES (${Income.IncomeID}, ${Income.IncomeTypeID},${Income.IncomePlan},${Income.IncomePerformance})
         ON CONFLICT (IncomeID) DO NOTHING;
       `;
       }),
@@ -582,7 +575,7 @@ async function seedIncome(client) {
 
     return {
       createTable,
-      users: insertedIncome,
+      Income: insertedIncome,
     };
   } catch (error) {
     console.error('Error seeding Income:', error);
@@ -605,10 +598,10 @@ async function seedIncomeType(client) {
 
     // Insert data into the "IncomeType" table
     const insertedIncomeType = await Promise.all(
-      IncomeTypees.map(async (IncomeType) => {
+      IncomeType.map(async (IncomeType) => {
         return client.sql`
-        INSERT INTO IncomeType (IncomeType, ParentID)
-        VALUES (${IncomeType.IncomeType},${IncomeType.parentid})
+        INSERT INTO IncomeType (IncomeTypeID, IncomeType, ParentID)
+        VALUES (${IncomeType.IncomeTypeID}, ${IncomeType.IncomeType},${IncomeType.ParentID})
         ON CONFLICT (IncomeTypeID) DO NOTHING;
       `;
       }),
@@ -618,10 +611,255 @@ async function seedIncomeType(client) {
 
     return {
       createTable,
-      users: insertedIncomeType,
+      IncomeType: insertedIncomeType,
     };
   } catch (error) {
     console.error('Error seeding IncomeType:', error);
     throw error;
   }
 }
+async function seedDepartment(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "users" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS Department (
+        DepartmentID INTEGER PRIMARY KEY,
+        DepartmentName VARCHAR,
+        OrganisationID INTEGER
+      );
+    `;
+
+    console.log(`Created "Department" table`);
+
+    // Insert data into the "Department" table
+    const insertedDepartment = await Promise.all(
+      Department.map(async (Department) => {
+        return client.sql`
+        INSERT INTO Department (DepartmentID, DepartmentName, OrganisationID)
+        VALUES (${Department.DepartmentID},${Department.DepartmentName}, ${Department.OrganisationID})
+        ON CONFLICT (DepartmentID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedDepartment.length} Department`);
+
+    return {
+      createTable,
+      Department: insertedDepartment,
+    };
+  } catch (error) {
+    console.error('Error seeding Department:', error);
+    throw error;
+  }
+}
+async function seedOrganisation(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "organisation" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS Organisation (
+        OrganisationID INTEGER PRIMARY KEY,
+        OrganisationName VARCHAR
+      );
+    `;
+
+    console.log(`Created "Organisation" table`);
+
+    // Insert data into the "Organisation" table
+    const insertedOrganisation = await Promise.all(
+      Organisation.map(async (Organisation) => {
+        return client.sql`
+        INSERT INTO Organisation (OrganisationID, OrganisationName)
+        VALUES (${Organisation.OrganisationID},${Organisation.OrganisationName})
+        ON CONFLICT (OrganisationID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedOrganisation.length} Organisation`);
+
+    return {
+      createTable,
+      Organisation: insertedOrganisation,
+    };
+  } catch (error) {
+    console.error('Error seeding Organisation:', error);
+    throw error;
+  }
+}
+async function seedBranch(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "branch" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS Branch (
+        BranchID INTEGER PRIMARY KEY,
+        BranchName VARCHAR,
+        AddressID INTEGER,
+        OrganisationID INTEGER
+      );
+    `;
+
+    console.log(`Created "Branch" table`);
+
+    // Insert data into the "Organisation" table
+    const insertedBranch = await Promise.all(
+      Branch.map(async (Branch) => {
+        return client.sql`
+        INSERT INTO Branch (BranchID, BranchName, AddressID, OrganisationID)
+        VALUES (${Branch.BranchID},${Branch.BranchName}, ${Branch.AddressID}, ${Branch.OrganisationID})
+        ON CONFLICT (BranchID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedBranch.length} Branch`);
+
+    return {
+      createTable,
+      Branch: insertedBranch,
+    };
+  } catch (error) {
+    console.error('Error seeding Branch:', error);
+    throw error;
+  }
+}
+async function seedAuthenticationHistory(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "AuthenticationHistory" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS AuthenticationHistory (
+        AuthenticationHistoryID INTEGER PRIMARY KEY,
+        LoginDate Date,
+        BuildingCapacityID INTEGER,
+        ExpensesID INTEGER,
+        IncomeID INTEGER,
+        OtherServiceID INTEGER,
+        MuseumServiceID INTEGER,
+        ExhibitID INTEGER,
+        UserID INTEGER
+      );
+    `;
+
+    console.log(`Created "AuthenticationHistory" table`);
+
+    // Insert data into the "Organisation" table
+    const insertedAuthenticationHistory = await Promise.all(
+      AuthenticationHistory.map(async (AuthenticationHistory) => {
+        return client.sql`
+        INSERT INTO AuthenticationHistory (
+          AuthenticationHistoryID,
+          LoginDate,
+          BuildingCapacityID,
+          ExpensesID,
+          IncomeID,
+          OtherServiceID,
+          MuseumServiceID,
+          ExhibitID,
+          UserID
+        )
+        VALUES (
+          ${AuthenticationHistory.AuthenticationHistoryID},
+          ${AuthenticationHistory.LoginDate},
+          ${AuthenticationHistory.BuildingCapacityID},
+          ${AuthenticationHistory.ExpensesID},
+          ${AuthenticationHistory.IncomeID},
+          ${AuthenticationHistory.OtherServiceID},
+          ${AuthenticationHistory.MuseumServiceID},
+          ${AuthenticationHistory.ExhibitID},
+          ${AuthenticationHistory.UserID}
+        )
+        ON CONFLICT (AuthenticationHistoryID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedAuthenticationHistory.length} AuthenticationHistory`);
+
+    return {
+      createTable,
+      AuthenticationHistory: insertedAuthenticationHistory,
+    };
+  } catch (error) {
+    console.error('Error seeding AuthenticationHistory:', error);
+    throw error;
+  }
+}
+async function seedServiceAddress(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "ServiceAddress" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS ServiceAddress (
+        ServiceAddressID INTEGER PRIMARY KEY,
+        MuseumServiceID INTEGER,
+        AddressID INTEGER
+      );
+    `;
+
+    console.log(`Created "ServiceAddress" table`);
+
+    // Insert data into the "Organisation" table
+    const insertedServiceAddress = await Promise.all(
+      ServiceAddress.map(async (ServiceAddress) => {
+        return client.sql`
+        INSERT INTO ServiceAddress (
+          ServiceAddressID,
+          MuseumServiceID,
+          AddressID
+        )
+        VALUES (
+          ${ServiceAddress.ServiceAddressID},
+          ${ServiceAddress.MuseumServiceID},
+          ${ServiceAddress.AddressID}
+        )
+        ON CONFLICT (ServiceAddressID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedServiceAddress.length} ServiceAddress`);
+
+    return {
+      createTable,
+      ServiceAddress: insertedServiceAddress,
+    };
+  } catch (error) {
+    console.error('Error seeding ServiceAddress:', error);
+    throw error;
+  }
+}
+async function main() {
+  const client = await db.connect();
+    await seedUsers(client);
+    await seedEmployee(client);
+    await seedOccupation(client);
+    await seedAddress(client);
+    await seedExhibitHistory(client);
+    await seedExhibitType(client);
+    await seedMuseumService(client);
+    await seedOtherService(client);
+    await seedKind(client);
+    await seedCustomerType(client);
+    await seedBuildingCapacity(client);
+    await seedExpenses(client);
+    await seedExpensesType(client);
+    await seedIncome(client);
+    await seedIncomeType(client);
+    await seedDepartment(client);
+    await seedOrganisation(client);
+    await seedBranch(client);
+    await seedAuthenticationHistory(client);
+    await seedServiceAddress(client);
+  await client.end();
+}
+
+main().catch((err) => {
+  console.error(
+    'An error occurred while attempting to seed the database:',
+    err,
+  );
+});

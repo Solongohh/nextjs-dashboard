@@ -63,7 +63,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<UserTable>`
+      const users = await sql<User>`
         SELECT
           User.UserID,
           User.UserRole,
@@ -90,7 +90,8 @@ import { sql } from '@vercel/postgres';
       const data = await sql<Employee>`
         SELECT *
         FROM Employee
-        JOIN Occupation ON Occupation.OccupationID = OccupationID
+        JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
+        JOIN Department ON Department.EmployeeID = Employee.EmployeeID
         ORDER BY Employee.FirstName DESC`;
   
       const latestEmployee = data.rows.map((employee) => ({
@@ -123,7 +124,7 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch Employee.');
     }
   }
-  export async function fetchExhibit() {
+  export async function fetchCardData() {
     noStore();
     try {
       // You can probably combine these into a single SQL query
@@ -329,7 +330,7 @@ import { sql } from '@vercel/postgres';
     noStore();
     try {
       const data = await sql<Income>`
-        SELECT *
+        SELECT Income.* , IncomeType.IncomeType
         FROM Income
         JOIN IncomeType ON IncomeType.IncomeTypeID = IncomeTypeID`;
   
@@ -375,7 +376,7 @@ import { sql } from '@vercel/postgres';
       return users.rows;
     } catch (error) {
       console.error('Database Error:', error);
-      throw new Error('Failed to fetch FilteredOtherService.');
+      throw new Error('Failed to fetch FilteredIncome.');
     }
   }
 //   export async function fetchFilteredInvoices(
