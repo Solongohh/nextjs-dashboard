@@ -21,7 +21,32 @@ export type UserTable = {
   UserPhone: string;
   date: string;
 };
+export type AuthenticationHistory = {
+  AuthenticationHistoryID: number;
+  LoginDate: Date;
+  BuildingCapacityID: number;
+  ExpensesID: number;
+  IncomeID: number;
+  OtherServiceID: number;
+  MuseumServiceID: number;
+  ExhibitID: number;
+  UserID: number;
+}
 export type Employee = {
+  EmployeeID: number;
+  LastName: string;
+  FirsName: string;
+  BirthDate: Date;
+  Sex: 'F' | 'M';
+  Register: string[10];
+  Address: string;
+  Phone: number;
+  Education: 'Боловсролгүй' | 'Бага' | 'Суурь' | 'Бүрэн дунд' | 'Техникийн болон мэргэжилтэн' | 'Тусгай мэргэжлийн дунд' | 'Дипломын болон бакалаврын дээд' | 'Магистр' | 'Доктор';
+  Occupation: string;
+  StatePrize: boolean;
+  Impairment: boolean;
+};
+export type EmployeeTable = {
   EmployeeID: number;
   LastName: string;
   FirsName: string;
@@ -63,6 +88,18 @@ export type ExhibitHistory = {
   Status: 'Хасагдсан үзмэр' | 'Дижитал хэлбэрт оруулсан' | 'Сэргээн засварласан' | 'Хуулбарлагдсан';
   AddressID: number;
 };
+export type ExhibitTable = {
+  ExhibitID: number;
+  ExhibitTypeID: number;
+  Name: string;
+  Added_Exhibit: 'Худалдан авсан' | 'Бэлэг хандив' | 'Шилжүүлсэн' | 'Хайгуул малтлага, судалгаагаар';
+  Rating: 'Түүх, соёлын хосгүй үнэт' | 'Түүх соёлын үнэт';
+  Weight: number;
+  Set: string;
+  Definition: string;
+  Status: 'Хасагдсан үзмэр' | 'Дижитал хэлбэрт оруулсан' | 'Сэргээн засварласан' | 'Хуулбарлагдсан';
+  AddressID: number;
+};
 export type ExhibitType = {
   ExhibitTypeID: number;
   ExhibitType: 'Байнгын үзүүллэг' | 'Түр үзэсгэлэн' | 'Байгалийн өвийн' | 'Археологийн' | 'Түүхийн' | 'Угсаатны зүйн' | 'Шашин шүтлэгийн' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран зураг' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Монгол зураг - шүтээн зураг' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран баримал' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - График' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Инстоляци' | 'Урлаг, уран сайхны - Дүрслэх урлагийн - Гар урлалын' | 'Урлаг, уран сайхны - Гэрэл зургийн';
@@ -75,7 +112,21 @@ export type MuseumService = {
   KindID: number; 
   CustomerCount: number;
 };
+export type MuseumServiceTable = {
+  MuseumServiceID: number;
+  ExhibitTypeID: number;
+  CustomerTypeID: number;
+  KindID: number; 
+  CustomerCount: number;
+};
 export type OtherService = {
+  OtherServiceID: number;
+  Services: 'Музейн боловсролын ажил' | 'Сургалт семинар' | 'Дугуйлан' | 'Уралдаан, тэмцээн, наадам' | 'Хурал, зөвлөгөөн' | 'Үзэсгэлэн худалдаа' | 'Зохион байгуулсан эвент / арга хэмжээ';
+  KindID: number;
+  CustomerTypeID: number;
+  CustomerCount: number;
+};
+export type OtherServiceTable = {
   OtherServiceID: number;
   Services: 'Музейн боловсролын ажил' | 'Сургалт семинар' | 'Дугуйлан' | 'Уралдаан, тэмцээн, наадам' | 'Хурал, зөвлөгөөн' | 'Үзэсгэлэн худалдаа' | 'Зохион байгуулсан эвент / арга хэмжээ';
   KindID: number;
@@ -109,6 +160,12 @@ export type ExpensesType = {
   ParentID: number;
 };
 export type Income = {
+  IncomeID: number;
+  IncomeTypeID: number;
+  IncomePlan: number;
+  IncomePerformance: number;
+};
+export type IncomeTable = {
   IncomeID: number;
   IncomeTypeID: number;
   IncomePlan: number;

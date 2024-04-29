@@ -3,15 +3,20 @@ import { sql } from '@vercel/postgres';
     User,
     UserTable,
     Employee,
+    EmployeeTable,
     ExhibitType,
     ExhibitHistory,
+    ExhibitTable,
     MuseumService,
+    MuseumServiceTable,
     OtherService,
+    OtherServiceTable,
     Occupation,
     Address,
     Kind,
     BuildingCapacity,
     Income,
+    IncomeTable,
     Expenses
   } from './definitions';
   import { formatCurrency } from './utils';
@@ -64,7 +69,7 @@ import { sql } from '@vercel/postgres';
           User.UserRole,
           User.UserMail,
           User.UserPhone,
-          User.Password
+          User.Password,
           Employee.EmployeeID
         FROM User
         JOIN Employee ON Employee.EmployeeID = User.EmployeeID
@@ -97,7 +102,27 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch the latest employee.');
     }
   }
+  export async function fetchFilteredEmployee(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
+    try {
+      const Employees = await sql<EmployeeTable>`
+        SELECT *
+        FROM Employee
+        JOIN Occupation ON Occupation.OccupationID = OccupationID
+        ORDER BY Employee.FirstName DESC
+      `;
+  
+      return Employees.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch Employee.');
+    }
+  }
   export async function fetchExhibit() {
     noStore();
     try {
@@ -181,6 +206,25 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch exhibitType data.');
     }
   }
+  export async function fetchFilteredExhibit(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const users = await sql<ExhibitTable>`
+          SELECT * 
+          FROM ExhibitHistory
+          Join Address on Address.AddressID = ExhibitHistory.AddressID`;
+  
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch Exhibit.');
+    }
+  }
   export async function fetchMuseumService() {
     // Add noStore() here to prevent the response from being cached.
     // This is equivalent to in fetch(..., {cache: 'no-store'}).
@@ -209,6 +253,29 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch MuseumService data.');
     }
   }
+  export async function fetchFilteredMuseumService(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const users = await sql<MuseumServiceTable>`
+        SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
+        FROM MuseumService M
+        JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
+        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        JOIN Kind ON Kind.KindID = M.KindID;
+      `;
+  
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch MuseumServic.');
+    }
+  }
+  
   export async function fetchOtherService() {
     // Add noStore() here to prevent the response from being cached.
     // This is equivalent to in fetch(..., {cache: 'no-store'}).
@@ -236,6 +303,28 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch OtherService data.');
     }
   }
+  export async function fetchFilteredOtherService(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const users = await sql<OtherServiceTable>`
+        SELECT M.*, ExhibitType.*, CustomerType.CustomerType, Kind.KInd
+        FROM OtherService M
+        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        JOIN Kind ON Kind.KindID = M.KindID;
+      `;
+  
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch FilteredOtherService.');
+    }
+  }
+  
   export async function fetchIncome() {
     noStore();
     try {
@@ -267,6 +356,26 @@ import { sql } from '@vercel/postgres';
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the latest BuildingCapacity.');
+    }
+  }
+  export async function fetchFilteredIncome(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const users = await sql<IncomeTable>`
+        SELECT *
+        FROM Income
+        JOIN IncomeType ON IncomeType.IncomeTypeID = IncomeTypeID
+      `;
+  
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch FilteredOtherService.');
     }
   }
 //   export async function fetchFilteredInvoices(

@@ -1,5 +1,7 @@
 // This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
 
+const { Exhibit } = require("../ui/form/buttons");
+
 // const { Employee } = require("../ui/form/buttons");
 
 // https://nextjs.org/learn/dashboard-app/fetching-data
@@ -27,6 +29,98 @@ const Employee = [
     Stateprize: false,
     Impairment: false,
     AddressID: '01'
+  }
+];
+const OtherService = [
+  {
+    OtherServiceID: '1',
+    Service: 'Боловсролын, ажил',
+    KindID: '1',
+    CustomerTypeID: '1',
+    CustomerCount: '50'
+  },
+  {
+    OtherServiceID: '2',
+    Service: 'Сургалт, семинар',
+    KindID: '2',
+    CustomerTypeID: '1',
+    CustomerCount: '52'
+  },
+  {
+    OtherServiceID: '3',
+    Service: 'Дугуйлан',
+    KindID: '3',
+    CustomerTypeID: '2',
+    CustomerCount: '15'
+  }
+];
+const ExhibitHistory = [
+  {
+    ExhibitID: '1',
+    ExhibitType: '5',
+    Name: 'Богд хааны сандал',
+    Added_Exhibit: 'Хайгуул малтлага, судалгаагаар',
+    Rating: 'Түүх соёлын хосгүй үнэт',
+    Weight: '45',
+    Set: 'Эсгий дэвсгэр, хас хээн бүтээлэг',
+    Definition: '',
+    Status: 'Сэргээн засварласан',
+    AddressID: '3',
+  },
+  {
+    ExhibitID: '2',
+    ExhibitType: '4',
+    Name: 'Үлэг гүрвэлийн яс',
+    Added_Exhibit: 'Хайгуул малтлага, судалгаагаар',
+    Rating: 'Түүх соёлын үнэт',
+    Weight: '45',
+    Set: 'Эсгий дэвсгэр, хас хээн бүтээлэг',
+    Definition: 'Цэрдийн галавын үеийн үлэг гүрвэлийн олдвор ',
+    Status: 'Дижитал хэлбэрт оруулсан',
+    AddressID: '3',
+  }
+]
+const income = [
+  {
+    IncomeID: '1',
+    IncomeTypeID: '1',
+    IncomePlan: '1200000',
+    IncomeID: '1190000'
+  },
+  {
+    IncomeID: '2',
+    IncomeTypeID: '3',
+    IncomePlan: '450000',
+    IncomeID: '420000'
+  },
+  {
+    IncomeID: '3',
+    IncomeTypeID: '4',
+    IncomePlan: '55000',
+    IncomeID: '55000'
+  }
+]
+const MuseumService = [
+  {
+    MuseumServiceID: '1',
+    ExhibitTypeID: '1',
+    KindID: '1',
+    CustomerTypeID: '3',
+    CustomerCount: '42'
+  },
+  {
+    MuseumServiceID: '2',
+    ExhibitTypeID: '5',
+    KindID: '3',
+    CustomerTypeID: '2',
+    CustomerCount: '18'
+  },
+  {
+    MuseumServiceID: '1',
+    ExhibitTypeID: '3',
+    KindID: '4',
+    CustomerTypeID: '1',
+    CustomerCount: '63'
   }
 ]
 // const customers = [
@@ -203,4 +297,8 @@ const Employee = [
 module.exports = {
   User,
   Employee,
+  OtherService,
+  ExhibitHistory,
+  Income,
+  MuseumService
 };

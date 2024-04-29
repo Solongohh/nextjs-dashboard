@@ -1,5 +1,5 @@
 'use server';
-// import { signIn } from '@/auth';
+import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
@@ -8,24 +8,24 @@ import { redirect } from 'next/navigation';
 import { privateEncrypt } from 'crypto';
 import { BuildingCapacity, Employee, MuseumService } from '../ui/form/buttons';
 
-// export async function authenticate(
-//   prevState: string | undefined,
-//   formData: FormData,
-// ) {
-//   try {
-//     await signIn('credentials', formData);
-//   } catch (error) {
-//     if (error instanceof AuthError) {
-//       switch (error.type) {
-//         case 'CredentialsSignin':
-//           return 'Invalid credentials.';
-//         default:
-//           return 'Something went wrong.';
-//       }
-//     }
-//     throw error;
-//   }
-// }
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
 const FormSchema = z.object({
     userId: z.number(),
     userRole: z.string(),
@@ -72,7 +72,7 @@ export type State = {
     const date = new Date().toISOString().split('T')[0];
     try {
         await sql`
-            INSERT INTO User (UserID, UserRole, UserName, UserPhone, Password)
+            INSERT INTO Users (UserID, UserRole, UserName, UserPhone, Password)
             VALUES (${userId}, ${userRole}, ${userName}, ${userPhone}, ${password})
             WHERE EmployeeID = ${employeeID}
         `;
@@ -199,6 +199,17 @@ const CreateExhibit = FormExhibitSchema.omit({ ExhibitID: true, date: true });
     revalidatePath('/dashboard/form/createExhibit');
     redirect('/dashboard/form/createExhibit');
   }
+  export async function deleteExhibit(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM ExhibitHistory WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete Exhibit.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
   const FormMuseumServiceSchema = z.object({
     museumServiceID: z.number(), 
     exhibitTypeID: z.number(),
@@ -245,6 +256,17 @@ const CreateMuseumService = FormMuseumServiceSchema.omit({ museumServiceID: true
     revalidatePath('/dashboard/form/createMuseumService');
     redirect('/dashboard/form/createMuseumService');
   }
+  export async function deleteMuseumService(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM MuseumService WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete MuseumService.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
   const FormOtherServiceSchema = z.object({
     otherServiceID: z.number(), 
     services: z.string(),
@@ -262,6 +284,17 @@ const CreateMuseumService = FormMuseumServiceSchema.omit({ museumServiceID: true
     };
     message?: string | null;
   };
+  export async function deleteOtherService(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM OtherService WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete OtherService.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
 const CreateOtherService = FormOtherServiceSchema.omit({ otherServiceID: true, date: true });
   export async function createOtherService(prevState: OtherServiceState, formData: FormData) {
     const validatedFields = CreateOtherService.safeParse({
@@ -374,6 +407,17 @@ const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true })
     revalidatePath('/dashboard/form/createEmployee');
     redirect('/dashboard/form/createEmployee');
   }
+  export async function deleteEmployee(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM Employee WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete Employee.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
   const FormBuildingCapacitySchema = z.object({
     buildingCapacityID: z.number(),
     buildingCapacity: z.string(),
@@ -469,7 +513,19 @@ const CreateIncome = FormIncomeSchema.omit({ incomeID: true, date: true });
       }
     revalidatePath('/dashboard/form/createIncome');
     redirect('/dashboard/form/createIncome');
-  } const FormExpensesSchema = z.object({
+  } 
+  export async function deleteIncome(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM Income WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete Income.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
+  const FormExpensesSchema = z.object({
     expensesID: z.number(),
     expensesTypeID: z.number(),
     expensesPlan: z.number(),
