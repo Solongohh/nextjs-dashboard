@@ -59,7 +59,7 @@ export function MuseumServiceSkeleton() {
   );
 }
 
-export function LatestInvoicesSkeleton() {
+export function LatestExhibitSkeleton() {
   return (
     <div
       className={`${shimmer} relative flex w-full flex-col overflow-hidden md:col-span-4`}
@@ -96,7 +96,7 @@ export default function DashboardSkeleton() {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <RevenueChartSkeleton />
-        <LatestInvoicesSkeleton />
+        <LatestExhibitSkeleton />
       </div>
     </>
   );
@@ -209,6 +209,371 @@ export function UsersTableSkeleton() {
             <tbody className="bg-white">
               <TableRowSkeleton />
               <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function EmployeeTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  EmployeeID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Овог
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Нэр
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Төрсөн огноо
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Хүйс
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Регистр
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Утас
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Боловсрол
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Мэргэжил
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function IncomeTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  IncomeID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Орлогын төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Төлөвлөгөө
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Гүйцэтгэл
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function ExpensesTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  ExpensesID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Зарлагын төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Төлөвлөгөө
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Гүйцэтгэл
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function BuildingTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  BuildingCapacityID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Барилгын хүчин чадал
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Төлөвлөгөө
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Гүйцэтгэл
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ExhibitTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  ExhibitID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үзмэрийн төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үзмэрийн нэр
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үзмэрийн жин
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үзмэрийн нэмэгдсэн байдал
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function MuseumServiceTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  MuseumServiceID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Хэлбэр
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үйлчлүүлэгчийн төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үйлчлүүлэгчийн тоо
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+              <TableRowSkeleton />
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+export function OtherServiceTableSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="inline-block min-w-full align-middle">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="md:hidden">
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+            <InvoicesMobileSkeleton />
+          </div>
+          <table className="hidden min-w-full text-gray-900 md:table">
+            <thead className="rounded-lg text-left text-sm font-normal">
+              <tr>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  OtherServiceID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үйлчилгээ
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Хэлбэр
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үйлчлүүлэгчийн төрөл
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үйлчлүүлэгчийн тоо
+                </th>
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
+                  <span className="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
               <TableRowSkeleton />
               <TableRowSkeleton />
               <TableRowSkeleton />

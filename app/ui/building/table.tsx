@@ -1,54 +1,42 @@
 import Image from 'next/image';
-import { DeleteIncome } from '@/app/ui/income/button';
+// import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredIncome } from '@/app/lib/data';
-import { Income} from '@/app/lib/placeholder-data';
+import { fetchFilteredBuilding } from '@/app/lib/data';
+import { DeleteBuilding } from './button';
 
-export default async function IncomeTable({
+export default async function BuildingTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const income = await fetchFilteredIncome(query, currentPage);
+  const Buildings = await fetchFilteredBuilding(query, currentPage); // Rename the variable to avoid conflict
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {income?.map((income) => (
+            {Buildings?.map((building) => (
               <div
-                key={income.IncomeID}
+                key={building.BuildingCapacityID}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{income.IncomeTypeID}</p>
+                      <p>{building.BuildingCapacityID}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{income.IncomePlan}</p>
+                    <p className="text-sm text-gray-500">{building.BuildingCapacity}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}<p>{income.IncomePerformance}</p>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    {/* <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
-                    </p> */}
-                    {/* <p>{formatDateToLocal(user.date)}</p> */}
                   </div>
                   <div className="flex justify-end gap-2">
-                    {/* <UpdateUser id={user.UserID} />
-                    <DeleteUser id={user.UserID} /> */}
+                    {/* <UpdateUser id={user.UserID} /> */}
+                    {/* <DeleteEmployee id={employee.EmployeeID} /> */}
                   </div>
                 </div>
               </div>
@@ -58,10 +46,10 @@ export default async function IncomeTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  IncomeID
+                  BuildingCapacityID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Орлого
+                  Барилгын хүчин чадал
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Төлөвлөгөө
@@ -75,36 +63,29 @@ export default async function IncomeTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {income?.map((Income) => (
+              {Buildings?.map((building) => (
                 <tr
-                  key={Income.IncomeID}
+                  key={building.BuildingCapacityID}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{Income.IncomeID}</p>
+                      <p>{building.BuildingCapacityID}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Income.IncomeTypeID}
+                    {building.BuildingCapacity}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {(Income.IncomePlan)}
+                    {building.CapacityPlan}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}{Income.IncomePerformance}
+                    {building.CapacityPerformance}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       {/* <UpdateUser id={User.UserID} /> */}
-                      <DeleteIncome id={Income.IncomeID} />
+                      {/* <DeleteEmployee id={Employee.EmployeeID} /> */}
                     </div>
                   </td>
                 </tr>

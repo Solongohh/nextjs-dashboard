@@ -32,6 +32,10 @@ export type AuthenticationHistory = {
   ExhibitID: number;
   UserID: number;
 }
+export type Auth = {
+  LoginDate: Date;
+  UserID: number;
+}
 export type Employee = {
   EmployeeID: number;
   LastName: string;
@@ -85,7 +89,7 @@ export type ExhibitHistory = {
   Status: 'Хасагдсан үзмэр' | 'Дижитал хэлбэрт оруулсан' | 'Сэргээн засварласан' | 'Хуулбарлагдсан';
   AddressID: number;
 };
-export type ExhibitTable = {
+export type LatestExhibit = {
   ExhibitID: number;
   ExhibitTypeID: number;
   Name: string;

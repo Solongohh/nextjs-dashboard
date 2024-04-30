@@ -2,7 +2,6 @@ import Image from 'next/image';
 // import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredEmployee } from '@/app/lib/data';
-import { Employee} from '@/app/lib/placeholder-data';
 import { DeleteEmployee } from './button';
 
 export default async function EmployeeTable({
@@ -12,44 +11,32 @@ export default async function EmployeeTable({
   query: string;
   currentPage: number;
 }) {
-  const Employee = await fetchFilteredEmployee(query, currentPage);
+  const employees = await fetchFilteredEmployee(query, currentPage); // Rename the variable to avoid conflict
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {Employee?.map((Employee) => (
+            {employees?.map((employee) => (
               <div
-                key={Employee.EmployeeID}
+                key={employee.EmployeeID}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{Employee.FirsName}</p>
+                      <p>{employee.EmployeeID}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{Employee.Sex}</p>
+                    <p className="text-sm text-gray-500">{employee.FirsName}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    {/* <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
-                    </p> */}
-                    {/* <p>{formatDateToLocal(user.date)}</p> */}
                   </div>
                   <div className="flex justify-end gap-2">
-                    {/* <UpdateUser id={user.UserID} />
-                    <DeleteUser id={user.UserID} /> */}
+                    {/* <UpdateUser id={user.UserID} /> */}
+                    {/* <DeleteEmployee id={employee.EmployeeID} /> */}
                   </div>
                 </div>
               </div>
@@ -79,36 +66,32 @@ export default async function EmployeeTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {Employee?.map((Employee) => (
+              {employees?.map((employee) => (
                 <tr
-                  key={Employee.EmployeeID}
+                  key={employee.EmployeeID}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{Employee.EmployeeID}</p>
+                      <p>{employee.EmployeeID}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Employee.FirsName}
+                    {employee.FirsName}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {(Employee.Sex)}
+                    {employee.Sex}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}
+                    {employee.BirthDate ? formatDateToLocal(employee.BirthDate.toISOString()) : ''}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {employee.Occupation}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       {/* <UpdateUser id={User.UserID} /> */}
-                      <DeleteEmployee id={Employee.EmployeeID} />
+                      {/* <DeleteEmployee id={Employee.EmployeeID} /> */}
                     </div>
                   </td>
                 </tr>

@@ -6,7 +6,7 @@ import { sql } from '@vercel/postgres';
     EmployeeTable,
     ExhibitType,
     ExhibitHistory,
-    ExhibitTable,
+    // ExhibitTable,
     MuseumService,
     MuseumServiceTable,
     OtherService,
@@ -17,7 +17,10 @@ import { sql } from '@vercel/postgres';
     BuildingCapacity,
     Income,
     IncomeTable,
-    Expenses
+    Expenses,
+    LatestExhibit,
+    Auth,
+    AuthenticationHistory
   } from './definitions';
   import { formatCurrency } from './utils';
   import { unstable_noStore as noStore } from 'next/cache';
@@ -64,17 +67,16 @@ import { sql } from '@vercel/postgres';
   
     try {
       const users = await sql<User>`
-        SELECT
-          User.UserID,
-          User.UserRole,
-          User.UserMail,
-          User.UserPhone,
-          User.Password,
-          Employee.EmployeeID
-        FROM User
-        JOIN Employee ON Employee.EmployeeID = User.EmployeeID
-        WHERE
-          Employee.FirstName ILIKE ${`%${query}%`}
+      SELECT
+          Users.UserID,
+          Users.UserRole,
+          Users.UserMail,
+          Users.UserPhone,
+          Users.Password,
+          Employee.FirstName
+      FROM Users
+      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;
+  
       `;
   
       return users.rows;
@@ -83,7 +85,29 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch Users.');
     }
   }
+  export async function fetchUser() {
+    noStore();
+    try {
+      const data = await sql<User>`
+      SELECT
+          Users.UserID,
+          Users.UserRole,
+          Users.UserMail,
+          Users.UserPhone,
+          Users.Password,
+          Employee.FirstName
+      FROM Users
+      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
   
+      const User = data.rows.map((user) => ({
+        ...user,
+      }));
+      return User;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the user.');
+    }
+  }
   export async function fetchEmployee() {
     noStore();
     try {
@@ -91,7 +115,8 @@ import { sql } from '@vercel/postgres';
         SELECT *
         FROM Employee
         JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
-        JOIN Department ON Department.EmployeeID = Employee.EmployeeID
+        JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+        JOIN Address ON Address.AddressID = Employee.AddressID
         ORDER BY Employee.FirstName DESC`;
   
       const latestEmployee = data.rows.map((employee) => ({
@@ -114,7 +139,7 @@ import { sql } from '@vercel/postgres';
       const Employees = await sql<EmployeeTable>`
         SELECT *
         FROM Employee
-        JOIN Occupation ON Occupation.OccupationID = OccupationID
+        JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
         ORDER BY Employee.FirstName DESC
       `;
   
@@ -130,26 +155,26 @@ import { sql } from '@vercel/postgres';
       // You can probably combine these into a single SQL query
       // However, we are intentionally splitting them to demonstrate
       // how to initialize multiple queries in parallel with JS.
-      const ExhibitCount = sql`SELECT COUNT(*) FROM Exhibit`;
-      const UserCount = sql`SELECT COUNT(*) FROM User`;
+      const ExhibitCount = sql`SELECT COUNT(*) FROM ExhibitHistory`;
+      const EmployeeCount = sql`SELECT COUNT(*) FROM Employee`;
       const MuseumServiceCount = sql`SELECT COUNT(*) FROM MuseumService`;
       const OtherServiceCount = sql`SELECT COUNT(*) FROM OtherService`;
   
       const data = await Promise.all([
         ExhibitCount,
-        UserCount,
+        EmployeeCount,
         MuseumServiceCount,
         OtherServiceCount,
       ]);
   
       const numberOfExhibit = Number(data[0].rows[0].count ?? '0');
-      const numberOfUser = Number(data[1].rows[0].count ?? '0');
-      const numberOfMuseumService = Number(data[1].rows[0].count ?? '0');
-      const numberOfOtherService = Number(data[1].rows[0].count ?? '0');
+      const numberOfEmployee = Number(data[1].rows[0].count ?? '0');
+      const numberOfMuseumService = Number(data[2].rows[0].count ?? '0');
+      const numberOfOtherService = Number(data[2].rows[0].count ?? '0');
   
       return {
         numberOfExhibit,
-        numberOfUser,
+        numberOfEmployee,
         numberOfMuseumService,
         numberOfOtherService,
       };
@@ -215,7 +240,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<ExhibitTable>`
+      const users = await sql<ExhibitHistory>`
           SELECT * 
           FROM ExhibitHistory
           Join Address on Address.AddressID = ExhibitHistory.AddressID`;
@@ -313,7 +338,7 @@ import { sql } from '@vercel/postgres';
   
     try {
       const users = await sql<OtherServiceTable>`
-        SELECT M.*, ExhibitType.*, CustomerType.CustomerType, Kind.KInd
+        SELECT M.*, CustomerType.CustomerType, Kind.KInd
         FROM OtherService M
         JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
         JOIN Kind ON Kind.KindID = M.KindID;
@@ -332,7 +357,7 @@ import { sql } from '@vercel/postgres';
       const data = await sql<Income>`
         SELECT Income.* , IncomeType.IncomeType
         FROM Income
-        JOIN IncomeType ON IncomeType.IncomeTypeID = IncomeTypeID`;
+        JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID`;
   
       const latestIncome = data.rows.map((Income) => ({
         ...Income,
@@ -350,13 +375,32 @@ import { sql } from '@vercel/postgres';
         SELECT *
         FROM BuildingCapacity`;
   
-      const latestBuildingCapacity = data.rows.map((BuildingCapacity) => ({
+      const BuildingCapacity = data.rows.map((BuildingCapacity) => ({
         ...BuildingCapacity,
       }));
-      return latestBuildingCapacity;
+      return BuildingCapacity;
     } catch (error) {
       console.error('Database Error:', error);
-      throw new Error('Failed to fetch the latest BuildingCapacity.');
+      throw new Error('Failed to fetch the BuildingCapacity.');
+    }
+  }
+  export async function fetchFilteredBuilding(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+    try {
+      const users = await sql<BuildingCapacity>`
+        SELECT *
+        FROM BuildingCapacity
+      `;
+  
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch FilteredBuildingCapacity.');
     }
   }
   export async function fetchFilteredIncome(
@@ -370,7 +414,7 @@ import { sql } from '@vercel/postgres';
       const users = await sql<IncomeTable>`
         SELECT *
         FROM Income
-        JOIN IncomeType ON IncomeType.IncomeTypeID = IncomeTypeID
+        JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID
       `;
   
       return users.rows;
@@ -379,148 +423,98 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch FilteredIncome.');
     }
   }
-//   export async function fetchFilteredInvoices(
-//     query: string,
-//     currentPage: number,
-//   ) {
-//     noStore();
-//     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  export async function fetchFilteredExpenses(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
-//     try {
-//       const invoices = await sql<InvoicesTable>`
-//         SELECT
-//           invoices.id,
-//           invoices.amount,
-//           invoices.date,
-//           invoices.status,
-//           customers.name,
-//           customers.email,
-//           customers.image_url
-//         FROM invoices
-//         JOIN customers ON invoices.customer_id = customers.id
-//         WHERE
-//           customers.name ILIKE ${`%${query}%`} OR
-//           customers.email ILIKE ${`%${query}%`} OR
-//           invoices.amount::text ILIKE ${`%${query}%`} OR
-//           invoices.date::text ILIKE ${`%${query}%`} OR
-//           invoices.status ILIKE ${`%${query}%`}
-//         ORDER BY invoices.date DESC
-//         LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-//       `;
+    try {
+      const users = await sql<Expenses>`
+        SELECT *
+        FROM Expenses
+        JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID
+      `;
   
-//       return invoices.rows;
-//     } catch (error) {
-//       console.error('Database Error:', error);
-//       throw new Error('Failed to fetch invoices.');
-//     }
-//   }
+      return users.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch FilteredExpenses.');
+    }
+  }
+  export async function fetchLatestExhibit() {
+    noStore();
+    try {
+      const data = await sql<LatestExhibit>`
+        SELECT * 
+        FROM ExhibitHistory
+        Join Address on Address.AddressID = ExhibitHistory.AddressID
+        LIMIT 5`;
   
-//   export async function fetchInvoicesPages(query: string) {
-//     noStore();
-//     try {
-//       const count = await sql`SELECT COUNT(*)
-//       FROM invoices
-//       JOIN customers ON invoices.customer_id = customers.id
-//       WHERE
-//         customers.name ILIKE ${`%${query}%`} OR
-//         customers.email ILIKE ${`%${query}%`} OR
-//         invoices.amount::text ILIKE ${`%${query}%`} OR
-//         invoices.date::text ILIKE ${`%${query}%`} OR
-//         invoices.status ILIKE ${`%${query}%`}
-//     `;
+      const latestExhibits = data.rows.map((exhibit) => ({
+        ...exhibit,
+        amount: formatCurrency(exhibit.Weight),
+      }));
+      return latestExhibits;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the latest Exhibit.');
+    }
+  }
+  export async function fetchExpenses() {
+    noStore();
+    try {
+      const data = await sql<Income>`
+        SELECT Expenses.* , ExpensesType.ExpensesType
+        FROM Expenses
+        JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID`;
   
-//       const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-//       return totalPages;
-//     } catch (error) {
-//       console.error('Database Error:', error);
-//       throw new Error('Failed to fetch total number of invoices.');
-//     }
-//   }
+      const latestExpenses = data.rows.map((Expenses) => ({
+        ...Expenses,
+      }));
+      return latestExpenses;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the Expenses.');
+    }
+  }
+  export async function fetchAuth() {
+    noStore();
+    try {
+      const data = await sql<Auth>`
+        SELECT UserID, LoginDate
+        FROM AuthenticationHistory`;
   
-//   export async function fetchInvoiceById(id: string) {
-//     noStore();
-//     try {
-//       const data = await sql<InvoiceForm>`
-//         SELECT
-//           invoices.id,
-//           invoices.customer_id,
-//           invoices.amount,
-//           invoices.status
-//         FROM invoices
-//         WHERE invoices.id = ${id};
-//       `;
+      const AuthenticationHistory = data.rows.map((auth) => ({
+        ...auth,
+      }));
+      return AuthenticationHistory;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the authenticationhistory.');
+    }
+  }
+  // export async function fetchEmployeePages(query: string) {
+  //   noStore();
+  //   try {
+  //     const count = await sql`SELECT COUNT(*)
+  //     FROM Employee
+  //     JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
+  //     JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+  //     JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+  //     JOIN Address ON Address.AddressID = Employee.AddressID
+  //     WHERE
+  //       Employee.EmployeeID ${`%${query}%`} OR
+  //       Employee.Sex ILIKE ${`%${query}%`} OR
+  //       Employee.Occupation::text ILIKE ${`%${query}%`} OR
+  //       Employee.Education::text ILIKE ${`%${query}%`}
+  //   `;
   
-//       const invoice = data.rows.map((invoice) => ({
-//         ...invoice,
-//         // Convert amount from cents to dollars
-//         amount: invoice.amount / 100,
-//       }));
-//       console.log(invoice); // Invoice is an empty array []
-//       return invoice[0];
-//     } catch (error) {
-//       console.error('Database Error:', error);
-//       throw new Error('Failed to fetch invoice.');
-//     }
-//   }
-  
-//   export async function fetchCustomers() {
-//     try {
-//       const data = await sql<CustomerField>`
-//         SELECT
-//           id,
-//           name
-//         FROM customers
-//         ORDER BY name ASC
-//       `;
-  
-//       const customers = data.rows;
-//       return customers;
-//     } catch (err) {
-//       console.error('Database Error:', err);
-//       throw new Error('Failed to fetch all customers.');
-//     }
-//   }
-  
-//   export async function fetchFilteredCustomers(query: string) {
-//     try {
-//       const data = await sql<CustomersTableType>`
-//           SELECT
-//             customers.id,
-//             customers.name,
-//             customers.email,
-//             customers.image_url,
-//             COUNT(invoices.id) AS total_invoices,
-//             SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-//             SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-//           FROM customers
-//           LEFT JOIN invoices ON customers.id = invoices.customer_id
-//           WHERE
-//             customers.name ILIKE ${`%${query}%`} OR
-//           customers.email ILIKE ${`%${query}%`}
-//           GROUP BY customers.id, customers.name, customers.email, customers.image_url
-//           ORDER BY customers.name ASC
-//         `;
-  
-//       const customers = data.rows.map((customer) => ({
-//         ...customer,
-//         total_pending: formatCurrency(customer.total_pending),
-//         total_paid: formatCurrency(customer.total_paid),
-//       }));
-  
-//       return customers;
-//     } catch (err) {
-//       console.error('Database Error:', err);
-//       throw new Error('Failed to fetch customer table.');
-//     }
-//   }
-  
-//   export async function getUser(email: string) {
-//     try {
-//       const user = await sql`SELECT * FROM users WHERE email=${email}`;
-//       return user.rows[0] as User;
-//     } catch (error) {
-//       console.error('Failed to fetch user:', error);
-//       throw new Error('Failed to fetch user.');
-//     }
-//   }
-  
+  //     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+  //     return totalPages;
+  //   } catch (error) {
+  //     console.error('Database Error:', error);
+  //     throw new Error('Failed to fetch total number of employee.');
+  //   }
+  // }

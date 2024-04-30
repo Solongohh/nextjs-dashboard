@@ -42,17 +42,6 @@ export default function Form({ museumservices }: { museumservices: MuseumService
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          {/* <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.MuseumServiceID &&
-              state.errors.MuseumServiceID.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div> */}
-        </div>
-
-        {/* Invoice Amount */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Choose an amount
@@ -72,8 +61,6 @@ export default function Form({ museumservices }: { museumservices: MuseumService
             </div>
           </div>
         </div>
-
-        {/* Invoice Status */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
             Set the invoice status
@@ -116,12 +103,13 @@ export default function Form({ museumservices }: { museumservices: MuseumService
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/dashboard/form/createMuseumService"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit">Бүртгэх</Button>
+      </div>
       </div>
     </form>
   );

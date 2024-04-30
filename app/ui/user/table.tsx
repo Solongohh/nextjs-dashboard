@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
+import { DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredUser } from '@/app/lib/data';
-import { User } from '@/app/lib/placeholder-data';
+import { Users } from '@/app/lib/placeholder-data';
 
 export default async function UserTable({
   query,
@@ -44,10 +44,10 @@ export default async function UserTable({
                     {/* <p className="text-xl font-medium">
                       {formatCurrency(invoice.amount)}
                     </p> */}
-                    <p>{formatDateToLocal(user.date)}</p>
+                    {/* <p>{formatDateToLocal(user.date)}</p> */}
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateUser id={user.UserID} />
+                    {/* <UpdateUser id={user.UserID} /> */}
                     <DeleteUser id={user.UserID} />
                   </div>
                 </div>
@@ -105,11 +105,11 @@ export default async function UserTable({
                     {(User.UserPhone)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(User.date)}
+                    {/* {formatDateToLocal(User.date)} */}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateUser id={User.UserID} />
+                      {/* <UpdateUser id={User.UserID} /> */}
                       <DeleteUser id={User.UserID} />
                     </div>
                   </td>

@@ -573,3 +573,25 @@ const CreateExpenses = FormExpensesSchema.omit({ expensesID: true, date: true })
     revalidatePath('/dashboard/form/createExpenses');
     redirect('/dashboard/form/createExpenses');
   }
+  export async function deleteExpenses(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM Expenses WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete Expenses.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }
+  export async function deleteBuilding(id: string) {
+    // throw new Error('Failed to Delete User');
+    try {
+        await sql`DELETE FROM BuildingCapacity WHERE id = ${id}`;
+    } catch (error) {
+        return {
+        message: 'Database Error: Failed to Delete Building.',
+        };
+    }
+    revalidatePath('/dashboard/form');
+  }

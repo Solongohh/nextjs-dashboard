@@ -49,7 +49,7 @@ export default async function MuseumServiceTable({
                   </div>
                   <div className="flex justify-end gap-2">
                     {/* <UpdateUser id={user.UserID} /> */}
-                    <DeleteMuseumService id={museumservice.MuseumServiceID} />
+                    {/* <DeleteMuseumService id={museumservice.MuseumServiceID} /> */}
                   </div>
                 </div>
               </div>
@@ -68,10 +68,10 @@ export default async function MuseumServiceTable({
                   Хэлбэр
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Үйлчлүүлэгч
+                  Үйлчлүүлэгчийн төрөл
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Тоо
+                  Үйлчлүүлэгчийн тоо
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -108,7 +108,7 @@ export default async function MuseumServiceTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       {/* <UpdateUser id={User.UserID} /> */}
-                      <DeleteMuseumService id={MuseumService.MuseumServiceID} />
+                      {/* <DeleteMuseumService id={MuseumService.MuseumServiceID} /> */}
                     </div>
                   </td>
                 </tr>

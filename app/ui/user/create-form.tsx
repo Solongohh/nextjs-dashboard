@@ -1,5 +1,5 @@
 'use client';
-import { OtherService } from '@/app/lib/definitions';
+import { User } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -8,12 +8,13 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createOtherService } from '@/app/lib/actions';
+import { createUser } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { Users } from '@/app/lib/placeholder-data';
 
-export default function Form({ otherservices }: { otherservices: OtherService[] }) {
+export default function Form({ users }: { users: User[] }) {
   const initialState = { message: null, errors: {} };
-  // const [state, dispatch] = useFormState(createOtherService, initialState);
+  // const [state, dispatch] = useFormState(createIncome, initialState);
   return (
     // <form action={dispatch}>
     <form>
@@ -21,7 +22,7 @@ export default function Form({ otherservices }: { otherservices: OtherService[] 
         {/* employee Name */}
         <div className="mb-4">
           <label htmlFor="employee" className="mb-2 block text-sm font-medium">
-            Choose OtherService
+            Choose User
           </label>
           <div className="relative">
             <select
@@ -32,33 +33,27 @@ export default function Form({ otherservices }: { otherservices: OtherService[] 
               aria-describedby="customer-error"
             >
               <option value="" disabled>
-                Select a OtherService
+                Select a User
               </option>
-              {otherservices.map((OtherService) => (
-                <option key={OtherService.OtherServiceID} value={OtherService.OtherServiceID}>
+              {users.map((user) => (
+                <option key={user.UserID} value={user.UserID}>
+                  {user.UserMail}
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          {/* <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.OtherServiceID &&
-              state.errors.OtherServiceID.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div> */}
-        </div>
+          
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/form/createOtherService"
+          href="/dashboard/users"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Бүртгэх</Button>
+        <Button type="submit">Create User</Button>
+      </div>
       </div>
     </form>
   );
