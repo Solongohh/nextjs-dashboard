@@ -10,7 +10,7 @@ export async function IncomeTable({
   query: string;
   currentPage: number;
 }) {
-  const income = await fetchFilteredIncome(query, currentPage);
+  const income : any[] | undefined = await fetchFilteredIncome(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -19,7 +19,7 @@ export async function IncomeTable({
           <div className="md:hidden">
             {income?.map((income) => (
               <div
-                key={income.IncomeID}
+                key={income.incomeid}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
@@ -32,11 +32,11 @@ export async function IncomeTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{income.IncomeID}</p>
+                      <p>{income.incomeid}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{income.IncomePlan}</p>
+                    <p className="text-sm text-gray-500">{income.incomeplan}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}<p>{income.IncomePerformance}</p>
+                  {/* <InvoiceStatus status={invoice.status} /> */}<p>{income.incomeperformance}</p>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -76,7 +76,7 @@ export async function IncomeTable({
             <tbody className="bg-white">
               {income?.map((Income) => (
                 <tr
-                  key={Income.IncomeID}
+                  key={Income.incomeid}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
@@ -88,17 +88,17 @@ export async function IncomeTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{Income.IncomeID}</p>
+                      <p>{Income.incomeid}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Income.IncomeTypeID}
+                    {Income.incometype}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Income.IncomePlan}
+                    {Income.incomeplan}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}{Income.IncomePerformance}
+                    {/* {formatDateToLocal(User.date)} */}{Income.incomeperformance}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
@@ -122,7 +122,7 @@ export async function ExpensesTable({
   query: string;
   currentPage: number;
 }) {
-  const Expenses = await fetchFilteredExpenses(query, currentPage);
+  const Expenses: any[] | undefined = await fetchFilteredExpenses(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -131,7 +131,7 @@ export async function ExpensesTable({
           <div className="md:hidden">
             {Expenses?.map((Expenses) => (
               <div
-                key={Expenses.ExpensesID}
+                key={Expenses.expensesid}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
@@ -144,11 +144,11 @@ export async function ExpensesTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{Expenses.ExpensesID}</p>
+                      <p>{Expenses.expensesid}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{Expenses.ExpensesPlan}</p>
+                    <p className="text-sm text-gray-500">{Expenses.expensesplan}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}<p>{Expenses.ExpensesPerformance}</p>
+                  {/* <InvoiceStatus status={invoice.status} /> */}<p>{Expenses.expensesperformance}</p>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -188,33 +188,25 @@ export async function ExpensesTable({
             <tbody className="bg-white">
               {Expenses?.map((Expenses) => (
                 <tr
-                  key={Expenses.ExpensesID}
+                  key={Expenses.expensesid}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{Expenses.ExpensesID}</p>
+                      <p>{Expenses.expensesid}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Expenses.ExpensesTypeID}
+                    {Expenses.expensestype}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Expenses.ExpensesPlan}
+                    {Expenses.expensesplan}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}{Expenses.ExpensesPerformance}
+                    {Expenses.expensesperformance}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* <UpdateUser id={User.UserID} /> */}
                       {/* <DeleteExpenses id={Expenses.ExpensesID} /> */}
                     </div>
                   </td>

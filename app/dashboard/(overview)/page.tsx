@@ -8,6 +8,7 @@ import {
   LatestExhibitSkeleton,
   CardsSkeleton,
 } from '@/app/ui/skeletons';
+import '@/app/dashboard/(overview)/page.css'
 
 export default async function Page() {
   return (

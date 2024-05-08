@@ -2,7 +2,7 @@ import Image from 'next/image';
 // import { UpdateOtherService, DeleteOtherService } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredOtherService } from '@/app/lib/data';
-import { OtherService} from '@/app/lib/placeholder-data';
+// import { OtherService} from '@/app/lib/placeholder-data';
 
 export default async function OtherServiceTable({
   query,
@@ -11,7 +11,7 @@ export default async function OtherServiceTable({
   query: string;
   currentPage: number;
 }) {
-  const otherservice = await fetchFilteredOtherService(query, currentPage);
+  const otherservice : any[] | undefined = await fetchFilteredOtherService(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -20,31 +20,19 @@ export default async function OtherServiceTable({
           <div className="md:hidden">
             {otherservice?.map((otherservice) => (
               <div
-                key={otherservice.OtherServiceID}
+                key={otherservice.otherserviceid}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{otherservice.Services}</p>
+                      <p>{otherservice.services}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{otherservice.KindID}</p>
+                    <p className="text-sm text-gray-500">{otherservice.kind}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    {/* <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
-                    </p> */}
-                    {/* <p>{formatDateToLocal(user.date)}</p> */}
                   </div>
                   <div className="flex justify-end gap-2">
                     {/* <UpdateUser id={user.UserID} />
@@ -57,20 +45,20 @@ export default async function OtherServiceTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+              <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   OtherServiceID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Services
+                  Үйлчилгээ
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  KindID
+                  Хэлбэр
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  CustomerTypeID
+                  Үйлчлүүлэгчийн төрөл
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  CustomerCount
+                  Үйлчлүүлэгчийн тоо
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -79,35 +67,16 @@ export default async function OtherServiceTable({
             </thead>
             <tbody className="bg-white">
               {otherservice?.map((OtherService) => (
-                <tr
-                  key={OtherService.OtherServiceID}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{OtherService.Services}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {OtherService.KindID}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {(OtherService.CustomerTypeID)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}
-                  </td>
+                <tr key={OtherService.otherserviceid} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3">{OtherService.otherserviceid}</td>
+                  <td className="whitespace-nowrap px-3 py-3">{OtherService.services}</td>
+                  <td className="whitespace-nowrap px-3 py-3">{OtherService.kind}</td>
+                  <td className="whitespace-nowrap px-3 py-3">{OtherService.customertype}</td>
+                  <td className="whitespace-nowrap px-3 py-3">{OtherService.customercount}</td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* <UpdateUser id={User.UserID} />
-                      <DeleteUser id={User.UserID} /> */}
+                      {/* <UpdateInvoice id={OtherService.id} /> */}
+                      {/* <DeleteOtherService id={OtherService.OtherServiceID} /> */}
                     </div>
                   </td>
                 </tr>

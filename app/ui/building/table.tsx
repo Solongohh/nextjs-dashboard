@@ -11,8 +11,7 @@ export default async function BuildingTable({
   query: string;
   currentPage: number;
 }) {
-  const Buildings = await fetchFilteredBuilding(query, currentPage); // Rename the variable to avoid conflict
-
+  const Buildings: any[] | undefined = await fetchFilteredBuilding(query, currentPage); // Rename the variable to avoid conflict
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -20,15 +19,15 @@ export default async function BuildingTable({
           <div className="md:hidden">
             {Buildings?.map((building) => (
               <div
-                key={building.BuildingCapacityID}
+                key={building.buildingcapacityid}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>{building.BuildingCapacityID}</p>
+                      <p>{building.buildingcapacityid}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{building.BuildingCapacity}</p>
+                    <p className="text-sm text-gray-500">{building.buildingcapacity}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -65,22 +64,22 @@ export default async function BuildingTable({
             <tbody className="bg-white">
               {Buildings?.map((building) => (
                 <tr
-                  key={building.BuildingCapacityID}
+                  key={building.buildingcapacityid}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{building.BuildingCapacityID}</p>
+                      <p>{building.buildingcapacityid}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {building.BuildingCapacity}
+                    {building.buildingcapacity}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {building.CapacityPlan}
+                    {building.capacityplan}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {building.CapacityPerformance}
+                    {building.capacityperformance}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

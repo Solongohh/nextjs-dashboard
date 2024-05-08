@@ -407,10 +407,10 @@ const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true })
     revalidatePath('/dashboard/form/createEmployee');
     redirect('/dashboard/form/createEmployee');
   }
-  export async function deleteEmployee(id: string) {
+  export async function deleteEmployee(id: any) {
     // throw new Error('Failed to Delete User');
     try {
-        await sql`DELETE FROM Employee WHERE id = ${id}`;
+        await sql`DELETE FROM Employee WHERE EmployeeID = ${id}`;
     } catch (error) {
         return {
         message: 'Database Error: Failed to Delete Employee.',

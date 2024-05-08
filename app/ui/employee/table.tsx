@@ -1,7 +1,7 @@
 import Image from 'next/image';
 // import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredEmployee } from '@/app/lib/data';
+import { fetchEmployee } from '@/app/lib/data';
 import { DeleteEmployee } from './button';
 
 export default async function EmployeeTable({
@@ -11,7 +11,7 @@ export default async function EmployeeTable({
   query: string;
   currentPage: number;
 }) {
-  const employees = await fetchFilteredEmployee(query, currentPage); // Rename the variable to avoid conflict
+  const employees: any[] | undefined = await fetchEmployee(); // Rename the variable to avoid conflict
 
   return (
     <div className="mt-6 flow-root">
@@ -42,62 +42,65 @@ export default async function EmployeeTable({
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  EmployeeID
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  FirstName
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Sex
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Birthdate
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Occupation
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {employees?.map((employee) => (
-                <tr
-                  key={employee.EmployeeID}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <p>{employee.EmployeeID}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {employee.FirsName}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {employee.Sex}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {employee.BirthDate ? formatDateToLocal(employee.BirthDate.toISOString()) : ''}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {employee.Occupation}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      {/* <UpdateUser id={User.UserID} /> */}
-                      {/* <DeleteEmployee id={Employee.EmployeeID} /> */}
-                    </div>
-                  </td>
+            <table className="hidden min-w-full text-gray-900 md:table">
+              <thead className="rounded-lg text-left text-sm font-normal">
+                <tr>
+                  <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                    EmployeeID
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Овог
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Нэр
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Төрсөн огноо
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Хүйс
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Регистр
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Утас
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Боловсрол
+                  </th>
+                  <th scope="col" className="px-3 py-5 font-medium">
+                    Мэргэжил
+                  </th>
+                  <th scope="col" className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6">
+                    <span className="sr-only">Edit</span>
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white">
+                {employees.map((employee) => (
+                  <tr key={employee.employeeid} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">{employee.employeeid}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.lastname}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.firstname}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.birthdate ? formatDateToLocal(employee.birthdate.toISOString()) : ''}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.sex}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.register}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.phone}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.education}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{employee.occupation}</td>
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        {/* <UpdateInvoice id={employee.id} /> */}
+                        {/* <DeleteEmployee id={employee.employeeID} /> */}
+                      </div>
+                    </td>
+                </tr>
+                ))}
+              </tbody>
+
+            </table>
+
         </div>
       </div>
     </div>

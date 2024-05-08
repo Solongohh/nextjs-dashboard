@@ -11,7 +11,7 @@ import { Button } from '@/app/ui/button';
 import { createEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ employees, addresses }: { employees: Employee[] , addresses: Address[]}) {
+export default function Form({ employees, addresses }: { employees: any[] , addresses: any[]}) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createEmployee, initialState);
   return (
@@ -135,8 +135,8 @@ export default function Form({ employees, addresses }: { employees: Employee[] ,
                 <option value="" disabled>
                 </option>
                 {addresses && addresses.length > 0 && addresses.map((address)=> (
-                  <option key={address.AddressID} value={address.AddressID}>
-                    {address.Province}
+                  <option key={address.addressid} value={address.addressid}>
+                    {address.province}
                   </option>
                 ))}
               </select>
@@ -160,8 +160,8 @@ export default function Form({ employees, addresses }: { employees: Employee[] ,
                 <option value="" disabled>
                 </option>
                 {addresses && addresses.length > 0 && addresses.map((address)=> (
-                  <option key={address.AddressID} value={address.AddressID}>
-                    {address.District}
+                  <option key={address.addressid} value={address.addressid}>
+                    {address.district}
                   </option>
                 ))}
               </select>

@@ -13,9 +13,9 @@ export function CreateEmployee() {
   );
 }
 
-export function DeleteEmployee({ id }: { id: number }) {
+export function DeleteEmployee(id:any) {
   // Convert 'id' to string explicitly
-  const deleteEmployeeWithId = () => deleteEmployee(String(id));
+  const deleteEmployeeWithId = () => deleteEmployee(id);
 
   return (
     <button

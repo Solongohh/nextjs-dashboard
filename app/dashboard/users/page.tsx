@@ -1,10 +1,11 @@
 import Pagination from '@/app/ui/employee/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/user/table';
+// import Table from '@/app/ui/user/table';
 import { CreateUser } from '@/app/ui/user/button';
 import { lusitana } from '@/app/ui/fonts';
 import { UsersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
+import UserTable from '@/app/ui/user/table';
  
 export default async function Page({
   searchParams,
@@ -14,6 +15,7 @@ export default async function Page({
     page?: string;
   };
 }) {
+  console.log('user page');
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   return (
@@ -25,9 +27,9 @@ export default async function Page({
         <Search placeholder="Search user..." />
         <CreateUser />
       </div>
-       <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense>
+       {/* <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
+      </Suspense> */}
+      <UserTable query={query} currentPage={currentPage} />
       <div className="mt-5 flex w-full justify-center">
         {/* <Pagination totalPages={totalPages} /> */}
       </div>

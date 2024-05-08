@@ -2,7 +2,7 @@ import Image from 'next/image';
 // import { UpdateUser, DeleteUser } from '@/app/ui/user/button';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredExhibit } from '@/app/lib/data';
-import { ExhibitHistory} from '@/app/lib/placeholder-data';
+// import { ExhibitHistory} from '@/app/lib/placeholder-data';
 
 export default async function ExhibitTable({
   query,
@@ -11,7 +11,7 @@ export default async function ExhibitTable({
   query: string;
   currentPage: number;
 }) {
-  const Exhibit = await fetchFilteredExhibit(query, currentPage);
+  const Exhibit: any[] | undefined = await fetchFilteredExhibit(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -20,7 +20,7 @@ export default async function ExhibitTable({
           <div className="md:hidden">
             {Exhibit?.map((Exhibit) => (
               <div
-                key={Exhibit.ExhibitID}
+                key={Exhibit.exhibitid}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
@@ -33,9 +33,9 @@ export default async function ExhibitTable({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       /> */}
-                      <p>{Exhibit.Name}</p>
+                      <p>{Exhibit.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{Exhibit.Added_Exhibit}</p>
+                    <p className="text-sm text-gray-500">{Exhibit.added_exhibit}</p>
                   </div>
                   {/* <InvoiceStatus status={invoice.status} /> */}
                 </div>
@@ -56,23 +56,29 @@ export default async function ExhibitTable({
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
+            <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   ExhibitID
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Үзмэрийн төрөл
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Үзмэрийн нэр
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Нэмэгдсэн байдал
+                  Үзмэрийн жин
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Үзмэрийн жин
+                  Үзмэрийн нэмэгдсэн байдал
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Статус
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
+                <th
+                  scope="col"
+                  className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
+                >
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
@@ -85,24 +91,23 @@ export default async function ExhibitTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      /> */}
-                      <p>{Exhibit.ExhibitID}</p>
+                      <p>{Exhibit.exhibitid}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {Exhibit.Name}
+                    {Exhibit.exhibittype}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {(Exhibit.Added_Exhibit)}
+                    {Exhibit.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(User.date)} */}{Exhibit.Weight}
+                    {Exhibit.weight}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {Exhibit.added_exhibit}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {Exhibit.status}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

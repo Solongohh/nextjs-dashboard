@@ -175,7 +175,6 @@ export function UsersTableSkeleton() {
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
             <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
@@ -195,9 +194,6 @@ export function UsersTableSkeleton() {
                 <th scope="col" className="px-3 py-5 font-medium">
                   Password
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  EmployeeID
-                </th>
                 <th
                   scope="col"
                   className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6"
@@ -207,7 +203,6 @@ export function UsersTableSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              <TableRowSkeleton />
               <TableRowSkeleton />
               <TableRowSkeleton />
               <TableRowSkeleton />
@@ -462,6 +457,9 @@ export function ExhibitTableSkeleton() {
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Үзмэрийн нэмэгдсэн байдал
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Статус
                 </th>
                 <th
                   scope="col"
