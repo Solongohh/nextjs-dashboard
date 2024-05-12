@@ -24,6 +24,8 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
   return (
     <div className="w-full">
+    <div id='dot1'></div>
+    <div id='dot2'></div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"> 
           <Employee/>
           <IncomeExpenses/>
@@ -32,23 +34,22 @@ export default async function Page({
           <MuseumService/>
           <OtherService/>
       </div>
-      <hr className="mt-10"></hr>
-      <div className="flex w-full items-center justify-between mt-6">
-        
-        <h1 className={`${lusitana.className} text-2xl`}>Орлого зарлагын хүснэгт</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Ажилтан хайх..." />
-        <CreateIncome />
-        <CreateExpenses />
-      </div>
-       <Suspense key={query + currentPage} fallback={<IncomeTableSkeleton />}>
-        <IncomeTable query={query} currentPage={currentPage} />
-      </Suspense>
-      <Suspense key={query + currentPage} fallback={<ExpensesTableSkeleton />}>
-        <ExpensesTable query={query} currentPage={currentPage} />
-      </Suspense>
-      <div className="mt-5 flex w-full justify-center">
+      <div className="bg-white rounded-lg p-6 border-black mt-10">
+        <div className="flex w-full items-center justify-between mt-6">
+          
+          <h1 className={`${lusitana.className} text-2xl`}>Орлого зарлагын хүснэгт</h1>
+        </div>
+        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+          <Search placeholder="Ажилтан хайх..." />
+          <CreateIncome />
+          <CreateExpenses />
+        </div>
+        <Suspense key={query + currentPage} fallback={<IncomeTableSkeleton />}>
+          <IncomeTable query={query} currentPage={currentPage} />
+        </Suspense>
+        <Suspense key={query + currentPage} fallback={<ExpensesTableSkeleton />}>
+          <ExpensesTable query={query} currentPage={currentPage} />
+        </Suspense>
       </div>
     </div>
   );

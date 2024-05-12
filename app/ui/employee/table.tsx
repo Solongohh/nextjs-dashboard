@@ -67,9 +67,6 @@ export default async function EmployeeTable({
                     Утас
                   </th>
                   <th scope="col" className="px-3 py-5 font-medium">
-                    Боловсрол
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
                     Мэргэжил
                   </th>
                   <th scope="col" className="relative pb-4 pl-3 pr-6 pt-2 sm:pr-6">
@@ -87,7 +84,6 @@ export default async function EmployeeTable({
                     <td className="whitespace-nowrap px-3 py-3">{employee.sex}</td>
                     <td className="whitespace-nowrap px-3 py-3">{employee.register}</td>
                     <td className="whitespace-nowrap px-3 py-3">{employee.phone}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{employee.education}</td>
                     <td className="whitespace-nowrap px-3 py-3">{employee.occupation}</td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">

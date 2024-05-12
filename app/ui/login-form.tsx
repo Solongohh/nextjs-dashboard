@@ -24,8 +24,7 @@ export default function LoginForm() {
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
+              htmlFor="email">
               Email
             </label>
             <div className="relative">
@@ -78,7 +77,6 @@ export default function LoginForm() {
     </form>
   );
 }
- 
 function LoginButton() {
   const { pending } = useFormStatus();
  

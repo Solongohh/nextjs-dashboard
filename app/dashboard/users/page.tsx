@@ -20,19 +20,15 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
   return (
     <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Users</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search user..." />
-        <CreateUser />
-      </div>
-       {/* <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
-      </Suspense> */}
-      <UserTable query={query} currentPage={currentPage} />
-      <div className="mt-5 flex w-full justify-center">
-        {/* <Pagination totalPages={totalPages} /> */}
-      </div>
+    <div id='dot1'></div>
+    <div id='dot2'></div>
+      <div className="bg-white rounded-lg p-6 border-black mt-10">
+        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+          <Search placeholder="Search user..." />
+          <CreateUser />
+        </div>
+        <UserTable query={query} currentPage={currentPage} />
+        </div>
     </div>
   );
 }

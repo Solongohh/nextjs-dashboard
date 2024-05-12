@@ -16,3 +16,23 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+#dot1{
+  width: 200px;
+  height: 200px;
+  background-color: #569DFF;
+  filter: blur(150px);
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 30%;
+}
+#dot2{
+  width: 400px;
+  height: 400px;
+  background-color: #569DFF;
+  filter: blur(300px);
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+}
