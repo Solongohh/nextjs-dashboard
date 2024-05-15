@@ -25,7 +25,51 @@ const bcrypt = require('bcrypt');
 
 // const { Employee, MuseumService, OtherService } = require('@/app/ui/form/buttons.jsx');
 // const { Employee } = require('@/app/ui/form/buttons.tsx');
+async function seedEmployee(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "Employee" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS Employee (
+        EmployeeID SERIAL PRIMARY KEY, 
+        LastName VARCHAR(255),
+        FirstName VARCHAR(255),
+        Birthdate DATE,
+        Sex CHAR(1),
+        Register Char(10),
+        Phone Char(8),
+        Education VARCHAR,
+        OccupationID INTEGER,
+        Stateprize BOOLEAN,
+        Impairment BOOLEAN, 
+        AddressID INTEGER,
+        DepartmentID INTEGER
+      );
+    `;
+    console.log(`Created "Employee" table`);
 
+    // Insert data into the "employee" table
+    const insertedEmployee = await Promise.all(
+      Employee.map(async (employee) => {
+        return client.sql`
+        INSERT INTO Employee (LastName, FirstName, Birthdate, Sex, Register, Phone, Education, OccupationID, Stateprize, Impairment, AddressID, DepartmentID)
+        VALUES ( ${employee.LastName}, ${employee.FirstName}, ${employee.BirthDate}, ${employee.Sex},${employee.Register},${employee.Phone},${employee.Education},${employee.OccupationID},${employee.Stateprize},${employee.Impairment}, ${employee.AddressID}, ${employee.DepartmentID})
+        ON CONFLICT (EmployeeID) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedEmployee.length} Employee`);
+
+    return {
+      createTable,
+      Employee: insertedEmployee,
+    };
+  } catch (error) {
+    console.error('Error seeding employee:', error);
+    throw error;
+  }
+}
 async function seedUsers(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -33,11 +77,11 @@ async function seedUsers(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Users (
         UserID SERIAL PRIMARY KEY,
-        UserRole VARCHAR(255) NOT NULL,
-        UserMail VARCHAR(255) NOT NULL,
-        UserPhone CHAR(8) NOT NULL,
-        Password Varchar NOT NULL,
-        EmployeeID INTEGER NOT NULL
+        UserRole VARCHAR(255),
+        UserMail VARCHAR(255),
+        UserPhone CHAR(8),
+        Password Varchar,
+        EmployeeID INTEGER
       );
     `;
 
@@ -66,51 +110,7 @@ async function seedUsers(client) {
     throw error;
   }
 }
-async function seedEmployee(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "Employee" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS Employee (
-        EmployeeID SERIAL PRIMARY KEY, 
-        LastName VARCHAR(255) NOT NULL,
-        FirstName VARCHAR(255) NOT NULL,
-        Birthdate DATE,
-        Sex CHAR(1),
-        Register Char(10),
-        Phone Char(8),
-        Education VARCHAR,
-        OccupationID INTEGER,
-        Stateprize BOOLEAN,
-        Impairment BOOLEAN, 
-        AddressID INTEGER,
-        DepartmentID INTEGER
-      );
-    `;
-    console.log(`Created "Employee" table`);
 
-    // Insert data into the "employee" table
-    const insertedEmployee = await Promise.all(
-      Employee.map(async (employee) => {
-        return client.sql`
-        INSERT INTO Employee (EmployeeID, LastName, FirstName, Birthdate, Sex, Register, Phone, Education, OccupationID, Stateprize, Impairment, AddressID, DepartmentID)
-        VALUES (${employee.EmployeeID}, ${employee.LastName}, ${employee.FirstName}, ${employee.BirthDate}, ${employee.Sex},${employee.Register},${employee.Phone},${employee.Education},${employee.OccupationID},${employee.Stateprize},${employee.Impairment}, ${employee.AddressID}, ${employee.DepartmentID})
-        ON CONFLICT (EmployeeID) DO NOTHING;
-      `;
-      }),
-    );
-
-    console.log(`Seeded ${insertedEmployee.length} Employee`);
-
-    return {
-      createTable,
-      Employee: insertedEmployee,
-    };
-  } catch (error) {
-    console.error('Error seeding employee:', error);
-    throw error;
-  }
-}
 async function seedOccupation(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -118,7 +118,7 @@ async function seedOccupation(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Occupation (
         OccupationID SERIAL PRIMARY KEY,
-        Occupation VARCHAR(255) NOT NULL,
+        Occupation VARCHAR(255),
         ParentID INTEGER
       );
     `;
@@ -129,8 +129,8 @@ async function seedOccupation(client) {
     const insertedOccupation = await Promise.all(
       Occupation.map(async (occupation) => {
         return client.sql`
-        INSERT INTO Occupation (OccupationID, Occupation, ParentID)
-        VALUES (${occupation.OccupationID}, ${occupation.Occupation}, ${occupation.Parentid})
+        INSERT INTO Occupation (Occupation, ParentID)
+        VALUES (${occupation.Occupation}, ${occupation.Parentid})
         ON CONFLICT (OccupationID) DO NOTHING;
       `;
       }),
@@ -154,7 +154,7 @@ async function seedAddress(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Address (
         AddressID SERIAL PRIMARY KEY,
-        Country VARCHAR(255) NOT NULL,
+        Country VARCHAR(255),
         Province VARCHAR,
         District VARCHAR,
         Khoroo Varchar(255)
@@ -167,8 +167,8 @@ async function seedAddress(client) {
     const insertedAddress = await Promise.all(
       Address.map(async (address) => {
         return client.sql`
-        INSERT INTO Address (AddressID, Country, Province, District, Khoroo)
-        VALUES (${address.AddressID}, ${address.Country}, ${address.Province}, ${address.District}, ${address.Khoroo})
+        INSERT INTO Address (Country, Province, District, Khoroo)
+        VALUES (${address.Country}, ${address.Province}, ${address.District}, ${address.Khoroo})
         ON CONFLICT (AddressID) DO NOTHING
       `;
       }),
@@ -192,15 +192,15 @@ async function seedExhibitHistory(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExhibitHistory (
         ExhibitID SERIAL PRIMARY KEY,
-        ExhibitTypeID INTEGER NOT NULL,
-        Name VARCHAR(255) NOT NULL,
+        ExhibitTypeID INTEGER,
+        Name VARCHAR(255),
         Added_Exhibit VARCHAR,
         Rating VARCHAR,
         Weight Double precision,
         Set VARCHAR(255),
         Definition VARCHAR(255),
         Status VARCHAR,
-        AddressID INTEGER NOT NULL
+        AddressID INTEGER
       );
     `;
 
@@ -211,7 +211,6 @@ async function seedExhibitHistory(client) {
       ExhibitHistory.map(async (exhibithistory) => {
         return client.sql`
         INSERT INTO ExhibitHistory (
-          ExhibitID,
           ExhibitTypeID,
           Name,
           Added_Exhibit,
@@ -223,7 +222,6 @@ async function seedExhibitHistory(client) {
           AddressID
       )
       VALUES (
-          ${exhibithistory.ExhibitID},
           ${exhibithistory.ExhibitTypeID},     
           ${exhibithistory.Name}, 
           ${exhibithistory.Added_Exhibit},
@@ -259,7 +257,7 @@ async function seedExhibitType(client) {
       CREATE TABLE IF NOT EXISTS ExhibitType (
         ExhibitTypeID SERIAL PRIMARY KEY,
         ExhibitType VARCHAR,
-        ParentID INTEGER NOT NULL
+        ParentID INTEGER
       );
     `;
 
@@ -269,8 +267,8 @@ async function seedExhibitType(client) {
     const insertedExhibitType = await Promise.all(
       ExhibitType.map(async (exhibittype) => {
         return client.sql`
-        INSERT INTO ExhibitType (ExhibitTypeID, ExhibitType, ParentID)
-        Values (${exhibittype.ExhibitTypeID}, ${exhibittype.ExhibitType}, ${exhibittype.ParentID})
+        INSERT INTO ExhibitType (ExhibitType, ParentID)
+        Values (${exhibittype.ExhibitType}, ${exhibittype.ParentID})
         ON CONFLICT (ExhibitTypeID) DO NOTHING;
       `;
       }),
@@ -294,10 +292,10 @@ async function seedMuseumService(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS MuseumService (
         MuseumServiceID SERIAL PRIMARY KEY,
-        ExhibitTypeID INTEGER NOT NULL,
-        CustomerTypeID INTEGER NOT NULL,
-        KindID INTEGER NOT NULL,
-        CustomerCount INTEGER NOT NULL
+        ExhibitTypeID INTEGER,
+        CustomerTypeID INTEGER,
+        KindID INTEGER,
+        CustomerCount INTEGER
       );
     `;
 
@@ -307,8 +305,8 @@ async function seedMuseumService(client) {
     const insertedMuseumService = await Promise.all(
       MuseumService.map(async (MuseumService) => {
         return client.sql`
-        INSERT INTO MuseumService (MuseumServiceID, ExhibitTypeID, CustomerTypeID, KindID, CustomerCount)
-        VALUES (${MuseumService.MuseumServiceID}, ${MuseumService.ExhibitTypeID}, ${MuseumService.CustomerTypeID}, ${MuseumService.KindID}, ${MuseumService.CustomerCount})
+        INSERT INTO MuseumService ( ExhibitTypeID, CustomerTypeID, KindID, CustomerCount)
+        VALUES ( ${MuseumService.ExhibitTypeID}, ${MuseumService.CustomerTypeID}, ${MuseumService.KindID}, ${MuseumService.CustomerCount})
         ON CONFLICT (MuseumServiceID) DO NOTHING;
         `;
       }),
@@ -333,9 +331,9 @@ async function seedOtherService(client) {
       CREATE TABLE IF NOT EXISTS OtherService (
         OtherServiceID SERIAL PRIMARY KEY,
         Services VARCHAR,
-        KindID INTEGER NOT NULL,
-        CustomerTypeID INTEGER NOT NULL,
-        CustomerCount INTEGER NOT NULL
+        KindID INTEGER,
+        CustomerTypeID INTEGER,
+        CustomerCount INTEGER
       );
     `;
 
@@ -345,8 +343,8 @@ async function seedOtherService(client) {
     const insertedOtherService = await Promise.all(
       OtherService.map(async (OtherService) => {
         return client.sql`
-        INSERT INTO OtherService (OtherServiceID, Services, KindID, CustomerTypeID, CustomerCount)
-        VALUES (${OtherService.OtherServiceID}, ${OtherService.Services}, ${OtherService.KindID}, ${OtherService.CustomerTypeID}, ${OtherService.CustomerCount})
+        INSERT INTO OtherService ( Services, KindID, CustomerTypeID, CustomerCount)
+        VALUES ( ${OtherService.Services}, ${OtherService.KindID}, ${OtherService.CustomerTypeID}, ${OtherService.CustomerCount})
         ON CONFLICT (OtherServiceID) DO NOTHING;
         `;
       }),
@@ -371,7 +369,7 @@ async function seedKind(client) {
       CREATE TABLE IF NOT EXISTS Kind (
         KindID SERIAL PRIMARY KEY,
         Kind VARCHAR,
-        ParentID INTEGER NOT NULL
+        ParentID INTEGER
       );
     `;
 
@@ -381,8 +379,8 @@ async function seedKind(client) {
     const insertedKind = await Promise.all(
       Kind.map(async (Kind) => {
         return client.sql`
-        INSERT INTO Kind (KindID, Kind, ParentID)
-        VALUES (${Kind.KindID}, ${Kind.Kind}, ${Kind.ParentID})
+        INSERT INTO Kind ( Kind, ParentID)
+        VALUES ( ${Kind.Kind}, ${Kind.ParentID})
         ON CONFLICT (KindID) DO NOTHING;
       `;
       }),
@@ -416,8 +414,8 @@ async function seedCustomerType(client) {
     const insertedCustomerType = await Promise.all(
       CustomerType.map(async (CustomerType) => {
         return client.sql`
-        INSERT INTO CustomerType (CustomerTypeID, CustomerType)
-        VALUES (${CustomerType.CustomerTypeID}, ${CustomerType.CustomerType})
+        INSERT INTO CustomerType ( CustomerType)
+        VALUES ( ${CustomerType.CustomerType})
         ON CONFLICT (CustomerTypeID) DO NOTHING;
       `;
       }),
@@ -442,8 +440,8 @@ async function seedBuildingCapacity(client) {
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
         BuildingCapacityID SERIAL PRIMARY KEY,
         BuildingCapacity VARCHAR,
-        CapacityPlan DOUBLE precision NOT NULL,
-        CapacityPerformance DOUBLE precision NOT NULL
+        CapacityPlan DOUBLE precision,
+        CapacityPerformance DOUBLE precision
       );
     `;
 
@@ -453,8 +451,8 @@ async function seedBuildingCapacity(client) {
     const insertedBuildingCapacity = await Promise.all(
       BuildingCapacity.map(async (BuildingCapacity) => {
         return client.sql`
-        INSERT INTO BuildingCapacity (BuildingCapacityID, BuildingCapacity, CapacityPlan, CapacityPerformance)
-        VALUES (${BuildingCapacity.BuildingCapacityID}, ${BuildingCapacity.BuildingCapacity},${BuildingCapacity.CapacityPlan},${BuildingCapacity.CapacityPerformance})
+        INSERT INTO BuildingCapacity ( BuildingCapacity, CapacityPlan, CapacityPerformance)
+        VALUES ( ${BuildingCapacity.BuildingCapacity},${BuildingCapacity.CapacityPlan},${BuildingCapacity.CapacityPerformance})
         ON CONFLICT (BuildingCapacityID) DO NOTHING;
         `;
       }),
@@ -478,9 +476,9 @@ async function seedExpenses(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Expenses (
         ExpensesID SERIAL PRIMARY KEY,
-        ExpensesTypeID INTEGER NOT NULL,
-        ExpensesPlan DOUBLE precision NOT NULL,
-        ExpensesPerformance DOUBLE precision NOT NULL
+        ExpensesTypeID INTEGER,
+        ExpensesPlan DOUBLE precision,
+        ExpensesPerformance DOUBLE precision
       );
     `;
 
@@ -490,8 +488,8 @@ async function seedExpenses(client) {
     const insertedExpenses = await Promise.all(
       Expenses.map(async (Expenses) => {
         return client.sql`
-        INSERT INTO Expenses (ExpensesID, ExpensesTypeID, ExpensesPlan, ExpensesPerformance)
-        VALUES (${Expenses.ExpensesTypeID},${Expenses.ExpensesTypeID},${Expenses.ExpensesPlan},${Expenses.ExpensesPerformance})
+        INSERT INTO Expenses (ExpensesTypeID, ExpensesPlan, ExpensesPerformance)
+        VALUES (${Expenses.ExpensesTypeID},${Expenses.ExpensesPlan},${Expenses.ExpensesPerformance})
         ON CONFLICT (ExpensesID) DO NOTHING;
       `;
       }),
@@ -516,7 +514,7 @@ async function seedExpensesType(client) {
       CREATE TABLE IF NOT EXISTS ExpensesType (
         ExpensesTypeID SERIAL PRIMARY KEY,
         ExpensesType VARCHAR,
-        ParentID INTEGER NOT NULL
+        ParentID INTEGER
       );
     `;
 
@@ -526,8 +524,8 @@ async function seedExpensesType(client) {
     const insertedExpensesType = await Promise.all(
       ExpensesType.map(async (ExpensesType) => {
         return client.sql`
-        INSERT INTO ExpensesType (ExpensesTypeID, ExpensesType, ParentID)
-        VALUES (${ExpensesType.ExpensesTypeID}, ${ExpensesType.ExpensesType},${ExpensesType.ParentID})
+        INSERT INTO ExpensesType ( ExpensesType, ParentID)
+        VALUES ( ${ExpensesType.ExpensesType},${ExpensesType.ParentID})
         ON CONFLICT (ExpensesTypeID) DO NOTHING;
       `;
       }),
@@ -551,9 +549,9 @@ async function seedIncome(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Income (
         IncomeID SERIAL PRIMARY KEY,
-        IncomeTypeID INTEGER NOT NULL,
-        IncomePlan DOUBLE precision NOT NULL,
-        IncomePerformance DOUBLE precision NOT NULL
+        IncomeTypeID INTEGER,
+        IncomePlan DOUBLE precision,
+        IncomePerformance DOUBLE precision
       );
     `;
 
@@ -563,8 +561,8 @@ async function seedIncome(client) {
     const insertedIncome = await Promise.all(
       Income.map(async (Income) => {
         return client.sql`
-        INSERT INTO Income (IncomeID, IncomeTypeID, IncomePlan, IncomePerformance)
-        VALUES (${Income.IncomeID}, ${Income.IncomeTypeID},${Income.IncomePlan},${Income.IncomePerformance})
+        INSERT INTO Income (IncomeTypeID, IncomePlan, IncomePerformance)
+        VALUES (${Income.IncomeTypeID},${Income.IncomePlan},${Income.IncomePerformance})
         ON CONFLICT (IncomeID) DO NOTHING;
       `;
       }),
@@ -589,7 +587,7 @@ async function seedIncomeType(client) {
       CREATE TABLE IF NOT EXISTS IncomeType (
         IncomeTypeID SERIAL PRIMARY KEY,
         IncomeType VARCHAR,
-        ParentID INTEGER NOT NULL
+        ParentID INTEGER
       );
     `;
 
@@ -599,8 +597,8 @@ async function seedIncomeType(client) {
     const insertedIncomeType = await Promise.all(
       IncomeType.map(async (IncomeType) => {
         return client.sql`
-        INSERT INTO IncomeType (IncomeTypeID, IncomeType, ParentID)
-        VALUES (${IncomeType.IncomeTypeID}, ${IncomeType.IncomeType},${IncomeType.ParentID})
+        INSERT INTO IncomeType (IncomeType, ParentID)
+        VALUES (${IncomeType.IncomeType},${IncomeType.ParentID})
         ON CONFLICT (IncomeTypeID) DO NOTHING;
       `;
       }),
@@ -635,8 +633,8 @@ async function seedDepartment(client) {
     const insertedDepartment = await Promise.all(
       Department.map(async (Department) => {
         return client.sql`
-        INSERT INTO Department (DepartmentID, DepartmentName, OrganisationID)
-        VALUES (${Department.DepartmentID},${Department.DepartmentName}, ${Department.OrganisationID})
+        INSERT INTO Department ( DepartmentName, OrganisationID)
+        VALUES (${Department.DepartmentName}, ${Department.OrganisationID})
         ON CONFLICT (DepartmentID) DO NOTHING;
       `;
       }),
@@ -670,8 +668,8 @@ async function seedOrganisation(client) {
     const insertedOrganisation = await Promise.all(
       Organisation.map(async (Organisation) => {
         return client.sql`
-        INSERT INTO Organisation (OrganisationID, OrganisationName)
-        VALUES (${Organisation.OrganisationID},${Organisation.OrganisationName})
+        INSERT INTO Organisation ( OrganisationName)
+        VALUES (${Organisation.OrganisationName})
         ON CONFLICT (OrganisationID) DO NOTHING;
       `;
       }),
@@ -707,8 +705,8 @@ async function seedBranch(client) {
     const insertedBranch = await Promise.all(
       Branch.map(async (Branch) => {
         return client.sql`
-        INSERT INTO Branch (BranchID, BranchName, AddressID, OrganisationID)
-        VALUES (${Branch.BranchID},${Branch.BranchName}, ${Branch.AddressID}, ${Branch.OrganisationID})
+        INSERT INTO Branch ( BranchName, AddressID, OrganisationID)
+        VALUES (${Branch.BranchName}, ${Branch.AddressID}, ${Branch.OrganisationID})
         ON CONFLICT (BranchID) DO NOTHING;
       `;
       }),
@@ -750,7 +748,6 @@ async function seedAuthenticationHistory(client) {
       AuthenticationHistory.map(async (AuthenticationHistory) => {
         return client.sql`
         INSERT INTO AuthenticationHistory (
-          AuthenticationHistoryID,
           LoginDate,
           BuildingCapacityID,
           ExpensesID,
@@ -761,7 +758,6 @@ async function seedAuthenticationHistory(client) {
           UserID
         )
         VALUES (
-          ${AuthenticationHistory.AuthenticationHistoryID},
           ${AuthenticationHistory.LoginDate},
           ${AuthenticationHistory.BuildingCapacityID},
           ${AuthenticationHistory.ExpensesID},
@@ -806,12 +802,10 @@ async function seedServiceAddress(client) {
       ServiceAddress.map(async (ServiceAddress) => {
         return client.sql`
         INSERT INTO ServiceAddress (
-          ServiceAddressID,
           MuseumServiceID,
           AddressID
         )
         VALUES (
-          ${ServiceAddress.ServiceAddressID},
           ${ServiceAddress.MuseumServiceID},
           ${ServiceAddress.AddressID}
         )
