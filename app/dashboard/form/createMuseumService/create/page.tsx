@@ -1,10 +1,14 @@
 import Form from '@/app/ui/museumService/create-form';
 import Breadcrumbs from '@/app/ui/museumService/breadcrumbs';
-import { fetchMuseumService, fetchExhibitType } from '@/app/lib/data';
+import { fetchMuseumService, fetchExhibitType, fetchProvince, fetchDistrict, fetchKind, fetchCustomerType } from '@/app/lib/data';
  
 export default async function Page() {
   const museumService = await fetchMuseumService();
   const exhibittype = await fetchExhibitType();
+  const province = await fetchProvince();
+  const district = await fetchDistrict();
+  const kind = await fetchKind();
+  const customertype = await fetchCustomerType();
  
   return (
     <main>
@@ -18,7 +22,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form museumservices={museumService} exhibittypes = {exhibittype} />
+      <Form museumservices={museumService} exhibittypes = {exhibittype} provinces={province} districts={district} kinds={kind} customertypes={customertype}/>
     </main>
   );
 }

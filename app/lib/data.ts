@@ -24,7 +24,10 @@ import { sql } from '@vercel/postgres';
     authenticationHistory,
     expensestype,
     province,
-    district
+    district,
+    added_exhibit,
+    rating,
+    customertype
   } from './definitions';
   import { formatCurrency } from './utils';
   import { unstable_noStore as noStore } from 'next/cache';
@@ -49,7 +52,7 @@ import { sql } from '@vercel/postgres';
   //     User.Password
   //     Employee.EmployeeID
   //   FROM User
-  //   JOIN Employee ON Employee.EmployeeID = User.EmployeeID
+  //    LEFT JOIN Employee ON Employee.EmployeeID = User.EmployeeID
   //   WHERE
   //     Employee.FirstName ILIKE ${`%${query}%`}`
   //       ;
@@ -74,7 +77,7 @@ import { sql } from '@vercel/postgres';
   //       Users.Password,
   //       Employee.FirstName
   //   FROM Users
-  //   JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
+  //    LEFT JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
 
   //     // return NextResponse.json({ result }, { status: 200 });
   //     return users.rows;
@@ -97,7 +100,7 @@ import { sql } from '@vercel/postgres';
           Users.*,
           Employee.*
       FROM Users
-      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;;
+      LEFT JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;;
   
       `;
       console.log(users);
@@ -117,7 +120,7 @@ import { sql } from '@vercel/postgres';
           Employee.*,
           Address.*
       FROM Users
-      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
+      LEFT JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
   
       const User = data.rows.map((user) => ({
         ...user,
@@ -132,12 +135,12 @@ import { sql } from '@vercel/postgres';
     noStore();
     try {
       const data = await sql<employee>`
-          SELECT *
-          FROM Employee
-          JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
-          JOIN Department ON Department.DepartmentID = Employee.DepartmentID
-          JOIN Address ON Address.AddressID = Employee.AddressID
-          ORDER BY Employee.FirstName ASC`;
+        SELECT *
+        FROM Employee
+        LEFT  JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
+        LEFT  JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+        LEFT JOIN Address ON Address.AddressID = Employee.AddressID
+        ORDER BY Employee.employeeid ASC`;
   
       const Employee  = data.rows.map((employee) => ({
         ...employee,
@@ -159,7 +162,7 @@ import { sql } from '@vercel/postgres';
       const Employees = await sql<employeetable>`
         SELECT *
         FROM Employee
-        JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
+        LEFT JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
         ORDER BY Employee.FirstName DESC
       `;
   
@@ -217,8 +220,30 @@ import { sql } from '@vercel/postgres';
       const data = await sql<exhibitHistory>`
         SELECT ExhibitHistory.*, ExhibitType.ExhibitType
         FROM ExhibitHistory
-        Join Address on Address.AddressID = ExhibitHistory.AddressID
-        Join ExhibitType on ExhibitType.ExhibitTypeID = ExhibitHistory.ExhibitTypeID`
+        LEFT Join Address on Address.AddressID = ExhibitHistory.AddressID
+        LEFT Join ExhibitType on ExhibitType.ExhibitTypeID = ExhibitHistory.ExhibitTypeID
+        ORDER BY ExhibitHistory.exhibitID ASC`
+        ;
+      return data.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch exhibithistory data.');
+    }
+  }
+  export async function fetchAddedExhibit() {
+    // Add noStore() here to prevent the response from being cached.
+    // This is equivalent to in fetch(..., {cache: 'no-store'}).
+    noStore();
+    try {
+      // Artificially delay a response for demo purposes.
+      // Don't do this in production :)
+  
+      console.log('Fetching added_exhibit data...');
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+      const data = await sql<added_exhibit>`
+        SELECT *
+        FROM added_exhibit`
         ;
   
       console.log('Data fetch completed after 3 seconds.');
@@ -226,7 +251,27 @@ import { sql } from '@vercel/postgres';
       return data.rows;
     } catch (error) {
       console.error('Database Error:', error);
-      throw new Error('Failed to fetch exhibithistory data.');
+      throw new Error('Failed to fetch added_exhibit data.');
+    }
+  }
+  export async function fetchRating() {
+    // Add noStore() here to prevent the response from being cached.
+    // This is equivalent to in fetch(..., {cache: 'no-store'}).
+    noStore();
+    try {
+      // Artificially delay a response for demo purposes.
+      // Don't do this in production :)
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+      const data = await sql<rating>`
+        SELECT *
+        FROM rating`
+        ;
+  
+      return data.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch rating data.');
     }
   }
   export async function fetchExhibitType() {
@@ -264,8 +309,8 @@ import { sql } from '@vercel/postgres';
       const users = await sql<exhibitHistory>`
           SELECT * 
           FROM ExhibitHistory
-          Join Address on Address.AddressID = ExhibitHistory.AddressID
-          JOIN ExhibitType on ExhibitType.ExhibitTypeID = ExhibitHistory.ExhibitTypeID`;
+          LEFT Join Address on Address.AddressID = ExhibitHistory.AddressID
+          LEFT JOIN ExhibitType on ExhibitType.ExhibitTypeID = ExhibitHistory.ExhibitTypeID`;
   
       return users.rows;
     } catch (error) {
@@ -287,9 +332,9 @@ import { sql } from '@vercel/postgres';
       const data = await sql<museumservice>`
         SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
         FROM MuseumService M
-        JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
-        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
-        JOIN Kind ON Kind.KindID = M.KindID;
+        LEFT JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
+        LEFT JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        LEFT JOIN Kind ON Kind.KindID = M.KindID;
       `
         ;
   
@@ -312,9 +357,9 @@ import { sql } from '@vercel/postgres';
       const users = await sql<museumservicetable>`
         SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
         FROM MuseumService M
-        JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
-        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
-        JOIN Kind ON Kind.KindID = M.KindID;
+        LEFT JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
+        LEFT JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        LEFT JOIN Kind ON Kind.KindID = M.KindID;
       `;
   
       return users.rows;
@@ -338,8 +383,8 @@ import { sql } from '@vercel/postgres';
       const data = await sql<otherservice>`
         SELECT M.*, CustomerType.*, Kind.*
         FROM OtherService M
-        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
-        JOIN Kind ON Kind.KindID = M.KindID;
+        LEFT JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        LEFT JOIN Kind ON Kind.KindID = M.KindID;
       `
         ;
   
@@ -362,8 +407,8 @@ import { sql } from '@vercel/postgres';
       const users = await sql<otherservicetable>`
         SELECT M.*, CustomerType.CustomerType, Kind.KInd
         FROM OtherService M
-        JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
-        JOIN Kind ON Kind.KindID = M.KindID;
+        LEFT JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
+        LEFT JOIN Kind ON Kind.KindID = M.KindID;
       `;
       return users.rows;
     } catch (error) {
@@ -378,7 +423,7 @@ import { sql } from '@vercel/postgres';
       const data = await sql<income>`
         SELECT Income.* , IncomeType.IncomeType
         FROM Income
-        JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID`;
+        LEFT JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID`;
   
       const latestIncome = data.rows.map((Income) => ({
         ...Income,
@@ -451,7 +496,7 @@ import { sql } from '@vercel/postgres';
       const users = await sql<incometable>`
         SELECT *
         FROM Income
-        JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID
+        LEFT JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID
       `;
   
       return users.rows;
@@ -471,7 +516,7 @@ import { sql } from '@vercel/postgres';
       const users = await sql<expenses>`
         SELECT *
         FROM Expenses
-        JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID
+        LEFT JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID
       `;
   
       return users.rows;
@@ -486,7 +531,7 @@ import { sql } from '@vercel/postgres';
       const data = await sql<latestexhibit>`
         SELECT * 
         FROM ExhibitHistory
-        Join Address on Address.AddressID = ExhibitHistory.AddressID
+        LEFT Join Address on Address.AddressID = ExhibitHistory.AddressID
         LIMIT 5`;
   
       const latestExhibits = data.rows.map((exhibit) => ({
@@ -503,9 +548,9 @@ import { sql } from '@vercel/postgres';
     noStore();
     try {
       const data = await sql<expenses>`
-        SELECT Expenses.* , ExpensesType.ExpensesType
-        FROM Expenses
-        JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID`;
+      SELECT Expenses.* , ExpensesType.ExpensesType
+      FROM Expenses
+      LEFT JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID `;
   
       const latestExpenses = data.rows.map((Expenses) => ({
         ...Expenses,
@@ -521,7 +566,8 @@ import { sql } from '@vercel/postgres';
     try {
       const data = await sql<expensestype>`
         SELECT *
-        FROM ExpensesType`;
+        FROM ExpensesType
+        WHERE ExpensesType.ExpensesTypeID not in (SELECT ParentID FROM ExpensesType)`;
   
       const ExpensesType = data.rows.map((ExpensesType) => ({
         ...ExpensesType,
@@ -586,7 +632,7 @@ import { sql } from '@vercel/postgres';
       const data = await sql<district>`
       SELECT *
       FROM district
-      JOIN province ON province.provinceid = district.provinceid`;
+      LEFT JOIN province ON province.provinceid = district.provinceid`;
   
       const District = data.rows.map((district) => ({
         ...district,
@@ -597,15 +643,47 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch the district.');
     }
   }
+  export async function fetchKind() {
+    noStore();
+    try {
+      const data = await sql<kind>`
+      SELECT *
+      FROM kind`;
+  
+      const Kind = data.rows.map((kind) => ({
+        ...kind,
+      }));
+      return Kind;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the kind.');
+    }
+  }
+  export async function fetchCustomerType() {
+    noStore();
+    try {
+      const data = await sql<customertype>`
+      SELECT *
+      FROM customertype`;
+  
+      const CustomerType = data.rows.map((customertype) => ({
+        ...customertype,
+      }));
+      return CustomerType;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the customertype.');
+    }
+  }
   // export async function fetchEmployeePages(query: string) {
   //   noStore();
   //   try {
   //     const count = await sql`SELECT COUNT(*)
   //     FROM Employee
-  //     JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
-  //     JOIN Department ON Department.DepartmentID = Employee.DepartmentID
-  //     JOIN Department ON Department.DepartmentID = Employee.DepartmentID
-  //     JOIN Address ON Address.AddressID = Employee.AddressID
+  //      LEFT JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
+  //      LEFT JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+  //      LEFT JOIN Department ON Department.DepartmentID = Employee.DepartmentID
+  //      LEFT JOIN Address ON Address.AddressID = Employee.AddressID
   //     WHERE
   //       Employee.EmployeeID ${`%${query}%`} OR
   //       Employee.Sex ILIKE ${`%${query}%`} OR

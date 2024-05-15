@@ -87,6 +87,10 @@ export type exhibitHistory = {
   status: ['Хасагдсан үзмэр', 'Дижитал хэлбэрт оруулсан', 'Сэргээн засварласан', 'Хуулбарлагдсан'];
   addressid: number;
 };
+export type added_exhibit = {
+  addedexhibitid: number;
+  added_exhibit: ['Худалдан авсан', 'Бэлэг хандив', 'Шилжүүлсэн', 'Хайгуул малтлага, судалгаагаар'];
+};
 export type latestexhibit = {
   exhibitid: number;
   exhibittypeid: number;
@@ -104,6 +108,10 @@ export type exhibittype = {
   exhibittype: ['Байнгын үзүүллэг', 'Түр үзэсгэлэн', 'Байгалийн өвийн', 'Археологийн', 'Түүхийн', 'Угсаатны зүйн', 'Шашин шүтлэгийн', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран зураг', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Монгол зураг - шүтээн зураг', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Уран баримал', 'Урлаг, уран сайхны - Дүрслэх урлагийн - График', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Инстоляци', 'Урлаг, уран сайхны - Дүрслэх урлагийн - Гар урлалын', 'Урлаг, уран сайхны - Гэрэл зургийн'];
   parentid: number;
 };
+export type rating = {
+  ratingid: number;
+  rating: string;
+}
 export type museumservice = {
   museumserviceid: number;
   exhibittypeid: number;

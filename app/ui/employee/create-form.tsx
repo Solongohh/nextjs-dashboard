@@ -10,8 +10,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createEmployee } from '@/app/lib/actions';
-import { useFormState } from 'react-dom';
-import { Employee } from '../form/buttons';
 
 export default function Form({ employees, provinces, districts }: { employees: employee[] , provinces: province[], districts: district[]}) {
   const employee = {
@@ -21,6 +19,8 @@ export default function Form({ employees, provinces, districts }: { employees: e
    "sex": '',
    "phone": '',
    "education": '',
+   "occupationid": '',
+   "departmentid": '',
    "register": '',
    "impairment": '',
    "stateprize": '',
@@ -86,11 +86,11 @@ export default function Form({ employees, provinces, districts }: { employees: e
             />
             <div className="grid sm:grid-cols-2 lg:grid-cols-2">
               <div>
-                  <input type="radio" id="male" name="gender" value="M" onChange={(e) => employee.sex = e.target.value}/>
+                  <input type="radio" id="male" name="gender" value="M" onChange={(e) => employee.sex = e.target.value} className='mr-4'/>
                   <label htmlFor="male">Эрэгтэй</label>
               </div>
               <div>
-                  <input type="radio" id="female" name="gender" value="F" onChange={(e) => employee.sex = e.target.value}/>
+                  <input type="radio" id="female" name="gender" value="F" onChange={(e) => employee.sex = e.target.value} className='mr-4'/>
                   <label htmlFor="female">Эмэгтэй</label>
               </div>
             </div>
