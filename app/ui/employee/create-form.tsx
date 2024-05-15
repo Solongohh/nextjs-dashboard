@@ -1,5 +1,6 @@
 'use client';
-import { Employee, Address } from '@/app/lib/definitions';
+import { employee, province, district } from '@/app/lib/definitions';
+import React, { useState } from "react";
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -10,13 +11,32 @@ import {
 import { Button } from '@/app/ui/button';
 import { createEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { Employee } from '../form/buttons';
 
-export default function Form({ employees, addresses }: { employees: any[] , addresses: any[]}) {
-  const initialState = { message: null, errors: {} };
-  // const [state, dispatch] = useFormState(createEmployee, initialState);
+export default function Form({ employees, provinces, districts }: { employees: employee[] , provinces: province[], districts: district[]}) {
+  const employee = {
+   "lastName": '',
+   "firstName": '' ,
+   "birthdate": '',
+   "sex": '',
+   "phone": '',
+   "education": '',
+   "register": '',
+   "impairment": '',
+   "stateprize": '',
+   "country": '',
+   "province": '',
+   "district": '',
+   "khoroo": ''
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    createEmployee(employee);
+  };
+
   return (
-    // <form action={dispatch}>
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* employee Name */}
         <div className="mb-4">
@@ -29,8 +49,8 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
               id="lastname"
               name="lastname"
               type="string"
-              step="0.01"
               placeholder="Овог"
+              onChange={(e) => employee.lastName = e.target.value}
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               required
             />
@@ -38,8 +58,8 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 id="firstname"
                 name="firstname"
                 type="string"
-                step="0.01"
                 placeholder="Нэр"
+                onChange={(e) => employee.firstName = e.target.value}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -59,18 +79,18 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 id="birthdate"
                 name="birthdate"
                 type="date"
-                step="0.01"
+                onChange={(e) => employee.birthdate = e.target.value}
                 placeholder=""
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
             />
             <div className="grid sm:grid-cols-2 lg:grid-cols-2">
               <div>
-                  <input type="radio" id="male" name="gender" value="male" />
+                  <input type="radio" id="male" name="gender" value="M" onChange={(e) => employee.sex = e.target.value}/>
                   <label htmlFor="male">Эрэгтэй</label>
               </div>
               <div>
-                  <input type="radio" id="female" name="gender" value="female" />
+                  <input type="radio" id="female" name="gender" value="F" onChange={(e) => employee.sex = e.target.value}/>
                   <label htmlFor="female">Эмэгтэй</label>
               </div>
             </div>
@@ -91,7 +111,7 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 id="register"
                 name="register"
                 type="string"
-                step="0.01"
+                onChange={(e) => employee.register = e.target.value}
                 placeholder="РД12345678"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
@@ -100,8 +120,8 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 id="phone"
                 name="phone"
                 type="number"
-                step="0.01"
                 placeholder="88778877 "
+                onChange={(e) => employee.phone = e.target.value}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -120,8 +140,8 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 id="country"
                 name="country"
                 type="string"
-                step="0.01"
-                placeholder="Монгол"
+                placeholder=""
+                onChange={(e) => employee.country = e.target.value}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -130,19 +150,20 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 name="province"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 defaultValue=""
+                onChange={(e) => employee.province = e.target.value}
                 aria-describedby="province-error"
                 >
                 <option value="" disabled>
                 </option>
-                {addresses && addresses.length > 0 && addresses.map((address)=> (
-                  <option key={address.addressid} value={address.addressid}>
-                    {address.province}
+                {provinces.map((province)=> (
+                  <option key={province.provinceid} value={province.provinceid}>
+                    {province.province}
                   </option>
                 ))}
               </select>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-4">
-            <label htmlFor="province" className="mb-2 block text-sm font-medium">
+            <label htmlFor="district" className="mb-2 block text-sm font-medium">
                 Дүүрэг
               </label>
               <label htmlFor="phone" className="mb-2 block text-sm font-medium">
@@ -155,13 +176,14 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 name="district"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 defaultValue=""
+                onChange={(e) => employee.district = e.target.value}
                 aria-describedby="district-error"
                 >
                 <option value="" disabled>
                 </option>
-                {addresses && addresses.length > 0 && addresses.map((address)=> (
-                  <option key={address.addressid} value={address.addressid}>
-                    {address.district}
+                {districts && districts.length > 0 && districts.map((district)=> (
+                  <option key={district.districtid} value={district.districtid}>
+                    {district.district}
                   </option>
                 ))}
               </select>
@@ -171,6 +193,7 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 type="string"
                 step="0.01"
                 placeholder="1-р хороо"
+                onChange={(e) => employee.khoroo = e.target.value}
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -186,6 +209,7 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
+              onChange={(e) => employee.education = e.target.value}
               aria-describedby="customer-error"
             >
               <option value=""></option>
@@ -214,22 +238,24 @@ export default function Form({ employees, addresses }: { employees: any[] , addr
                 name="impairment"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 defaultValue=""
+                onChange={(e) => employee.impairment = e.target.value}
                 aria-describedby="impairment-error"
                 >
                 <option value=""></option>
-                <option value="yes">Тийм</option>
-                <option value="no">Үгүй</option>
+                <option value="true">Тийм</option>
+                <option value="false">Үгүй</option>
               </select>
               <select
                 id="stateprize"
                 name="stateprize"
                 className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 defaultValue=""
+                onChange={(e) => employee.stateprize = e.target.value}
                 aria-describedby="stateprize-error"
                 >
                 <option value=""></option>
-                <option value="yes">Тийм</option>
-                <option value="no">Үгүй</option>
+                <option value="true">Тийм</option>
+                <option value="false">Үгүй</option>
               </select>
             </div>
         </div>

@@ -9,9 +9,9 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'CapacityBuilding', href: '/dashboard/form/createBuilding' },
+          { label: 'Маягт', href: '/dashboard/form' },
           {
-            label: 'Create BuildingCapacity',
+            label: 'Барилгын хүчин чадал',
             href: '/dashboard/form/createBuilding',
             active: true,
           },

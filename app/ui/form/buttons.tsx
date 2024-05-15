@@ -4,7 +4,7 @@ import Link from 'next/link';
 export function Employee() {
   return (
     <Link
-      href="/dashboard/form/createEmployee"
+      href="/dashboard/form"
       className="flex h-[48px] grow items-center border-black justify-center gap-2 rounded-md bg-white p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:p-2 md:px-3"
     >
       <span className="hidden md:block">Ажилтны мэдээлэл</span>{' '}

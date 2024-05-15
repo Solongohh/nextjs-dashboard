@@ -1,27 +1,30 @@
 import { sql } from '@vercel/postgres';
   import {
-    User,
-    UserTable,
-    Employee,
-    EmployeeTable,
-    ExhibitType,
-    ExhibitHistory,
-    // ExhibitTable,
-    MuseumService,
-    MuseumServiceTable,
-    OtherService,
-    OtherServiceTable,
-    Occupation,
-    Address,
-    Kind,
-    BuildingCapacity,
-    Income,
-    Incometype,
-    IncomeTable,
-    Expenses,
-    LatestExhibit,
-    Auth,
-    AuthenticationHistory
+    users,
+    usertable,
+    employee,
+    employeetable,
+    exhibittype,
+    exhibitHistory,
+    // exhibitTable,
+    museumservice,
+    museumservicetable,
+    otherservice,
+    otherservicetable,
+    occupation,
+    address,
+    kind,
+    buildingcapacity,
+    income,
+    incometable,
+    incometype,
+    expenses,
+    latestexhibit,
+    auth,
+    authenticationHistory,
+    expensestype,
+    province,
+    district
   } from './definitions';
   import { formatCurrency } from './utils';
   import { unstable_noStore as noStore } from 'next/cache';
@@ -89,14 +92,12 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<User>`
+      const users = await sql<users>`
       SELECT
           Users.*,
-          Employee.*,
-          Address.*
+          Employee.*
       FROM Users
-      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID
-      JOIN Address ON Employee.AddressID= Address.AddressID;;
+      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;;
   
       `;
       console.log(users);
@@ -110,14 +111,13 @@ import { sql } from '@vercel/postgres';
   export async function fetchUser() {
     noStore();
     try {
-      const data = await sql<User>`
+      const data = await sql<users>`
       SELECT
           Users.*,
           Employee.*,
           Address.*
       FROM Users
-      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID
-      JOIN Address ON Employee.AddressID= Address.AddressID;`;
+      JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
   
       const User = data.rows.map((user) => ({
         ...user,
@@ -131,7 +131,7 @@ import { sql } from '@vercel/postgres';
   export async function fetchEmployee() {
     noStore();
     try {
-      const data = await sql<Employee>`
+      const data = await sql<employee>`
           SELECT *
           FROM Employee
           JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
@@ -156,7 +156,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const Employees = await sql<EmployeeTable>`
+      const Employees = await sql<employeetable>`
         SELECT *
         FROM Employee
         JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
@@ -214,7 +214,7 @@ import { sql } from '@vercel/postgres';
       console.log('Fetching exhibit data...');
       await new Promise((resolve) => setTimeout(resolve, 3000));
   
-      const data = await sql<ExhibitHistory>`
+      const data = await sql<exhibitHistory>`
         SELECT ExhibitHistory.*, ExhibitType.ExhibitType
         FROM ExhibitHistory
         Join Address on Address.AddressID = ExhibitHistory.AddressID
@@ -240,7 +240,7 @@ import { sql } from '@vercel/postgres';
       console.log('Fetching exhibit data...');
       await new Promise((resolve) => setTimeout(resolve, 3000));
   
-      const data = await sql<ExhibitType>`
+      const data = await sql<exhibittype>`
         SELECT * 
         FROM ExhibitType`
         ;
@@ -261,10 +261,11 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<ExhibitHistory>`
+      const users = await sql<exhibitHistory>`
           SELECT * 
           FROM ExhibitHistory
-          Join Address on Address.AddressID = ExhibitHistory.AddressID`;
+          Join Address on Address.AddressID = ExhibitHistory.AddressID
+          JOIN ExhibitType on ExhibitType.ExhibitTypeID = ExhibitHistory.ExhibitTypeID`;
   
       return users.rows;
     } catch (error) {
@@ -283,7 +284,7 @@ import { sql } from '@vercel/postgres';
       console.log('Fetching MuseumService data...');
       await new Promise((resolve) => setTimeout(resolve, 3000));
   
-      const data = await sql<MuseumService>`
+      const data = await sql<museumservice>`
         SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
         FROM MuseumService M
         JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
@@ -308,7 +309,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<MuseumServiceTable>`
+      const users = await sql<museumservicetable>`
         SELECT M.*, ExhibitType.*, CustomerType.*, Kind.*
         FROM MuseumService M
         JOIN ExhibitType ON ExhibitType.ExhibitTypeID = M.ExhibitTypeID
@@ -334,7 +335,7 @@ import { sql } from '@vercel/postgres';
       console.log('Fetching OtherService data...');
       await new Promise((resolve) => setTimeout(resolve, 3000));
   
-      const data = await sql<OtherService>`
+      const data = await sql<otherservice>`
         SELECT M.*, CustomerType.*, Kind.*
         FROM OtherService M
         JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
@@ -358,13 +359,12 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<OtherServiceTable>`
+      const users = await sql<otherservicetable>`
         SELECT M.*, CustomerType.CustomerType, Kind.KInd
         FROM OtherService M
         JOIN CustomerType ON CustomerType.CustomerTypeID = M.CustomerTypeID
         JOIN Kind ON Kind.KindID = M.KindID;
       `;
-  
       return users.rows;
     } catch (error) {
       console.error('Database Error:', error);
@@ -375,7 +375,7 @@ import { sql } from '@vercel/postgres';
   export async function fetchIncome() {
     noStore();
     try {
-      const data = await sql<Income>`
+      const data = await sql<income>`
         SELECT Income.* , IncomeType.IncomeType
         FROM Income
         JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID`;
@@ -389,10 +389,26 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch the latest Income.');
     }
   }
+  export async function fetchIncomeType() {
+    noStore();
+    try {
+      const data = await sql<incometype>`
+        SELECT *
+        FROM IncomeType`;
+  
+      const IncomeType = data.rows.map((IncomeType) => ({
+        ...IncomeType,
+      }));
+      return IncomeType;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the IncomeType.');
+    }
+  }
   export async function fetchBuildingCapacity() {
     noStore();
     try {
-      const data = await sql<BuildingCapacity>`
+      const data = await sql<buildingcapacity>`
         SELECT *
         FROM BuildingCapacity`;
   
@@ -413,7 +429,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<BuildingCapacity>`
+      const users = await sql<buildingcapacity>`
         SELECT *
         FROM BuildingCapacity
       `;
@@ -432,7 +448,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<IncomeTable>`
+      const users = await sql<incometable>`
         SELECT *
         FROM Income
         JOIN IncomeType ON IncomeType.IncomeTypeID = Income.IncomeTypeID
@@ -452,7 +468,7 @@ import { sql } from '@vercel/postgres';
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
     try {
-      const users = await sql<Expenses>`
+      const users = await sql<expenses>`
         SELECT *
         FROM Expenses
         JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID
@@ -467,7 +483,7 @@ import { sql } from '@vercel/postgres';
   export async function fetchLatestExhibit() {
     noStore();
     try {
-      const data = await sql<LatestExhibit>`
+      const data = await sql<latestexhibit>`
         SELECT * 
         FROM ExhibitHistory
         Join Address on Address.AddressID = ExhibitHistory.AddressID
@@ -475,7 +491,7 @@ import { sql } from '@vercel/postgres';
   
       const latestExhibits = data.rows.map((exhibit) => ({
         ...exhibit,
-        amount: formatCurrency(exhibit.Weight),
+        amount: formatCurrency(exhibit.weight),
       }));
       return latestExhibits;
     } catch (error) {
@@ -486,7 +502,7 @@ import { sql } from '@vercel/postgres';
   export async function fetchExpenses() {
     noStore();
     try {
-      const data = await sql<Income>`
+      const data = await sql<expenses>`
         SELECT Expenses.* , ExpensesType.ExpensesType
         FROM Expenses
         JOIN ExpensesType ON ExpensesType.ExpensesTypeID = Expenses.ExpensesTypeID`;
@@ -500,10 +516,26 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch the Expenses.');
     }
   }
+  export async function fetchExpensesType() {
+    noStore();
+    try {
+      const data = await sql<expensestype>`
+        SELECT *
+        FROM ExpensesType`;
+  
+      const ExpensesType = data.rows.map((ExpensesType) => ({
+        ...ExpensesType,
+      }));
+      return ExpensesType;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the ExpensesType.');
+    }
+  }
   export async function fetchAuth() {
     noStore();
     try {
-      const data = await sql<Auth>`
+      const data = await sql<auth>`
         SELECT UserID, LoginDate
         FROM AuthenticationHistory`;
   
@@ -514,6 +546,55 @@ import { sql } from '@vercel/postgres';
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the authenticationhistory.');
+    }
+  }
+  export async function fetchAddress() {
+    noStore();
+    try {
+      const data = await sql<address>`
+      SELECT *
+      FROM Address`;
+  
+      const Address = data.rows.map((address) => ({
+        ...address,
+      }));
+      return Address;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the address.');
+    }
+  }
+  export async function fetchProvince() {
+    noStore();
+    try {
+      const data = await sql<province>`
+      SELECT *
+      FROM province`;
+  
+      const Province = data.rows.map((province) => ({
+        ...province,
+      }));
+      return Province;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the province.');
+    }
+  }
+  export async function fetchDistrict() {
+    noStore();
+    try {
+      const data = await sql<district>`
+      SELECT *
+      FROM district
+      JOIN province ON province.provinceid = district.provinceid`;
+  
+      const District = data.rows.map((district) => ({
+        ...district,
+      }));
+      return District;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the district.');
     }
   }
   // export async function fetchEmployeePages(query: string) {

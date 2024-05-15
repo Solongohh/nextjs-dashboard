@@ -1,5 +1,5 @@
 'use client';
-import { Incometype } from '@/app/lib/definitions';
+import { income, incometype } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -11,43 +11,45 @@ import { Button } from '@/app/ui/button';
 import { createIncome } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ incomeType }: { incomeType: Incometype[] }) {
+export default function Form({ incomes, incomeType }: { incomes: income[], incomeType: incometype[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createIncome, initialState);
   return (
     // <form action={dispatch}>
     <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        <div className="relative grid gap-6 sm:grid-cols-3 lg:grid-cols-3">
-          <label htmlFor="IncomePerformance" className="mb-2 block text-sm font-medium">
+        <div className="relative grid gap-4 sm:grid-cols-3 lg:grid-cols-3">
+          <label htmlFor="IncomePerformance" className="mb-2 block font-medium">
             Үйл ажиллагааны орлого
           </label>
-          <label htmlFor="IncomePlan" className="mb-2 block text-sm font-medium">
+          <label htmlFor="IncomePlan" className="mb-2 block font-medium">
             Төлөвлөгөө
           </label>
-          <label htmlFor="IncomePerformance" className="mb-2 block text-sm font-medium">
+          <label htmlFor="IncomePerformance" className="mb-2 block font-medium">
             Гүйцэтгэл
           </label>
-          {incomeType.map((IncomeType)=> (
-                  <option key={IncomeType.IncomeTypeID} value={IncomeType.IncomeTypeID}>
-                    {IncomeType.IncomeType}
-                  </option>
-                ))}
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="IncomePlan"
-                name="IncomePlan"
-                type="number"
-                step="0.01"
-                placeholder=""
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                required
-              />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
+          <div className='relative text-sm overflow-hidden'>
+            {incomeType.map((IncomeType)=> (
+                    <option key={IncomeType.incometypeid} value={IncomeType.incometypeid} className='mb-4'>
+                      {IncomeType.incometype}
+                      <div className="relative mb-2 rounded-md">
+                        <div className="relative">
+                          <input
+                            id="IncomePlan"
+                            name="IncomePlan"
+                            type="number"
+                            step="0.01"
+                            placeholder=""
+                            className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                            required
+                          />
+                          <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                        </div>
+                      </div>
+                    </option>
+                  ))}
           </div>
-          <div className="relative mt-2 rounded-md">
+          <div className="relative mb-2 rounded-md">
             <div className="relative">
               <input
                 id="IncomePerformance"

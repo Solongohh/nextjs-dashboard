@@ -1,5 +1,5 @@
 'use client';
-import { User } from '@/app/lib/definitions';
+import { users } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -10,9 +10,9 @@ import {
 import { Button } from '@/app/ui/button';
 import { createUser } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-import { Users } from '@/app/lib/placeholder-data';
+// import { users } from '@/app/lib/placeholder-data';
 
-export default function Form({ users }: { users: User[] }) {
+export default function Form({ users }: { users: users[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createIncome, initialState);
   return (
@@ -36,8 +36,8 @@ export default function Form({ users }: { users: User[] }) {
                 Select a User
               </option>
               {users.map((user) => (
-                <option key={user.UserID} value={user.UserID}>
-                  {user.UserMail}
+                <option key={user.userid} value={user.userid}>
+                  {user.usermail}
                 </option>
               ))}
             </select>

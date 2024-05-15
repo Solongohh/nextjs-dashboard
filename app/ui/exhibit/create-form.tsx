@@ -1,5 +1,5 @@
 'use client';
-import { ExhibitHistory } from '@/app/lib/definitions';
+import { address, exhibitHistory, exhibittype } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -11,108 +11,165 @@ import { Button } from '@/app/ui/button';
 import { createExhibit } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ exhibits }: { exhibits: ExhibitHistory[] }) {
+export default function Form({ exhibits, exhibittypes, addresses}: { exhibits: exhibitHistory[], exhibittypes: exhibittype[], addresses: address[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createExhibit, initialState);
   return (
     // <form action={dispatch}>
     <form>
+      
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* employee Name */}
         <div className="mb-4">
-          <label htmlFor="employee" className="mb-2 block text-sm font-medium">
-            Choose employee
+          <h2>Үзмэрийн мэдээлэл</h2><hr></hr>
+          <label htmlFor="exhibitname" className="mb-2 block text-sm font-medium mt-4">
+            Үзмэрийн нэр
           </label>
           <div className="relative">
-            <select
-              id="customer"
-              name="customerId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              aria-describedby="customer-error"
-            >
-              <option value="" disabled>
-                Select a employee
-              </option>
-              {exhibits.map((ExhibitHistory) => (
-                <option key={ExhibitHistory.ExhibitID} value={ExhibitHistory.ExhibitID}>
-                  {ExhibitHistory.Name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-          {/* <div id="employee-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.ExhibitID &&
-              state.errors.ExhibitID.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div> */}
-        </div>
-
-        {/* Invoice Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                placeholder="Enter USD amount"
+            <input
+                id="exhibit"
+                name="exhibit"
+                type="text"
+                placeholder="Нэр"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
           </div>
-        </div>
 
-        {/* Invoice Status */}
-        <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Set the invoice status
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="pending"
-                  name="status"
-                  type="radio"
-                  value="pending"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="pending"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
-                >
-                  Pending <ClockIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="paid"
-                  name="status"
-                  type="radio"
-                  value="paid"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="paid"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
-                >
-                  Paid <CheckIcon className="h-4 w-4" />
-                </label>
-              </div>
-            </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-4 ">
+            <label htmlFor="exhibittype" className="mb-2 block text-sm font-medium">
+                Үзмэрийн төрөл
+              </label>
+              <label htmlFor="added_exhibit" className="mb-2 block text-sm font-medium">
+                Нэмэгдсэн үзмэрийн төрөл
+              </label>
+          </div> 
+          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <select
+              id="ExhibitType"
+              name="ExhibitType"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue=""
+              aria-describedby="ExhibitType-error"
+            >
+              <option value="" disabled>
+                
+              </option>
+              {exhibits.map((ExhibitHistory) => (
+                <option key={ExhibitHistory.exhibitid} value={ExhibitHistory.exhibitid}>
+                  {ExhibitHistory.added_exhibit}
+                </option>
+              ))}
+            </select>
+            <select
+              id="added_exhibit"
+              name="added_exhibit"
+              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue=""
+              aria-describedby="added_exhibit-error"
+            >
+              <option value="" disabled>
+                
+              </option>
+              {exhibits.map((ExhibitHistory) => (
+                <option key={ExhibitHistory.exhibitid} value={ExhibitHistory.exhibitid}>
+                  {ExhibitHistory.added_exhibit}
+                </option>
+              ))}
+            </select>
           </div>
-        </fieldset>
+          
+          <label htmlFor="description" className="mb-2 block text-sm font-medium mt-4">
+            Нэмэлт тайлбар
+          </label>
+          <input
+                id="description"
+                name="description"
+                type="text"
+                placeholder=""
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                required
+              />
+
+          <h2 className='mt-6'>Байршил</h2><hr></hr>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-4">
+            <label htmlFor="province" className="mb-2 block text-sm font-medium">
+                Улс
+              </label>
+              <label htmlFor="phone" className="mb-2 block text-sm font-medium">
+                Аймаг
+              </label>
+          </div>
+          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <input
+                id="country"
+                name="country"
+                type="text"
+                step="0.01"
+                placeholder="Монгол"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                required
+              />
+              <select
+                id="province"
+                name="province"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue=""
+                aria-describedby="province-error"
+                >
+                <option value="" disabled>
+                </option>
+                {addresses && addresses.length > 0 && addresses.map((address)=> (
+                  <option key={address.addressid} value={address.addressid}>
+                    {address.province}
+                  </option>
+                ))}
+              </select>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-4">
+            <label htmlFor="province" className="mb-2 block text-sm font-medium">
+                Дүүрэг
+              </label>
+              <label htmlFor="phone" className="mb-2 block text-sm font-medium">
+                Хороо
+              </label>
+          </div>
+          <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <select
+                id="district"
+                name="district"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue=""
+                aria-describedby="district-error"
+                >
+                <option value="" disabled>
+                </option>
+                {addresses && addresses.length > 0 && addresses.map((address)=> (
+                  <option key={address.addressid} value={address.addressid}>
+                    {address.district}
+                  </option>
+                ))}
+              </select>
+              <input
+                id="khoroo"
+                name="khoroo"
+                type="text"
+                step="0.01"
+                placeholder="1-р хороо"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                required
+              />
+              </div>
+              <div className='flex flex-col mt-6'>
+                <input type="checkbox" id="hasagdsan" name="hasagdsan" />
+                <label htmlFor="hasagdsan">Хасагдсан үзмэр</label>
+                <input type="checkbox" id="digital" name="digital" />
+                <label htmlFor="digital">Дижитал хэлбэр оруулсан</label>
+                <input type="checkbox" id="sergeesen" name="sergeesen" />
+                <label htmlFor="sergeesen">Сэргээн засварласан</label>
+                <input type="checkbox" id="huulbarlasan" name="huulbarlasan" />
+                <label htmlFor="huulbarlasan">Хуулбарлагдсан</label>
+              </div>
+        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link

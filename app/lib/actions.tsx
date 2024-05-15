@@ -359,52 +359,44 @@ const CreateOtherService = FormOtherServiceSchema.omit({ otherServiceID: true, d
     message?: string | null;
   };
 const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true });
-  export async function createEmployee(prevState: MuseumServiceState, formData: FormData) {
-    const validatedFields = CreateEmployee.safeParse({
-      employeeID: formData.get('employeeID'),
-      lastName: formData.get('lastName'),
-      firstName: formData.get('firstName'),
-      birthdate: formData.get('birthdate'),
-      sex: formData.get('sex'),
-      register: formData.get('register'),
-      phone: formData.get('phone'),
-      education: formData.get('education'),
-      occupation: formData.get('occupation'),
-      stateprize: formData.get('stateprize'),
-      impairment: formData.get('impairment'),
-      addressID: formData.get('addressID')
-    });
-    // If form validation fails, return errors early. Otherwise, continue.
-    if (!validatedFields.success) {
-        return {
-          errors: validatedFields.error.flatten().fieldErrors,
-          message: 'Missing Fields. Failed to Create Employee.',
-        };
-      }
-      // Prepare data for insertion into the database
-    const {lastName, firstName, birthdate, sex, register, phone, education, occupation, stateprize, impairment, addressID } = validatedFields.data;
-    try {
+  export async function createEmployee(employee: any) {
+     try {
         await sql`
-            INSERT INTO Employee (lastName, firstName, birthdate, sex, register, phone, education, occupation, stateprize, impairment, addressID)
+          INSERT INTO Address (Country, province, district, khoroo)
+          VALUES (${employee.country}, ${employee.province}, ${employee.district}, ${employee.khoroo})
+        `;
+        await sql`
+            INSERT INTO Employee (lastName, firstName, birthDate, sex, register, phone, education, stateprize, impairment)
             VALUES (
-              ${lastName},
-              ${firstName},
-              ${birthdate},
-              ${sex},
-              ${register},
-              ${phone},
-              ${education},
-              ${occupation},
-              ${stateprize},
-              ${impairment},
-              ${addressID})
+              ${employee.lastName},
+              ${employee.firstName},
+              ${employee.birthdate},
+              ${employee.sex},
+              ${employee.register},
+              ${employee.phone},
+              ${employee.education},
+              ${employee.stateprize},
+              ${employee.impairment}
+            )
+        `;
+        await sql`
+        UPDATE employee
+        SET addressid = (
+            SELECT MAX(addressid)
+            FROM address
+        )
+        WHERE employeeid = (
+                            SELECT MAX(employeeid)
+                            FROM employee)
+        ;
         `;
       } catch (error) {
+        console.log('error' + error);
         return {
           message: 'Database Error: Failed to Create Employee.',
         };
       }
-    revalidatePath('/dashboard/form/createEmployee');
+    revalidatePath('/dashboard/from/createEmployee');
     redirect('/dashboard/form/createEmployee');
   }
   export async function deleteEmployee(id: any) {

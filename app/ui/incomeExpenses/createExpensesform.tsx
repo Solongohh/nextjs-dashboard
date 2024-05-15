@@ -1,5 +1,5 @@
 'use client';
-import { ExpensesType } from '@/app/lib/definitions';
+import { expenses, expensestype } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -11,7 +11,7 @@ import { Button } from '@/app/ui/button';
 import { createExpenses } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ ExpensesType }: { ExpensesType: ExpensesType[] }) {
+export default function Form({ Expenses, ExpensesType }: { Expenses: expenses[], ExpensesType: expensestype[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createExpenses, initialState);
   return (
@@ -29,8 +29,8 @@ export default function Form({ ExpensesType }: { ExpensesType: ExpensesType[] })
             Гүйцэтгэл
           </label>
           {ExpensesType.map((ExpensesType)=> (
-                  <option key={ExpensesType.ExpensesTypeID} value={ExpensesType.ExpensesTypeID}>
-                    {ExpensesType.ExpensesType}
+                  <option key={ExpensesType.expensestypeid} value={ExpensesType.expensestypeid}>
+                    {ExpensesType.expensestype}
                   </option>
                 ))}
           <div className="relative mt-2 rounded-md">

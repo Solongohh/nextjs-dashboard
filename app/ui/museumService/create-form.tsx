@@ -1,5 +1,5 @@
 'use client';
-import { MuseumService } from '@/app/lib/definitions';
+import { museumservice, exhibittype } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -11,7 +11,7 @@ import { Button } from '@/app/ui/button';
 import { createMuseumService } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function Form({ museumservices }: { museumservices: MuseumService[] }) {
+export default function Form({ museumservices, exhibittypes }: { museumservices: museumservice[], exhibittypes: exhibittype[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createMuseumService, initialState);
   return (
@@ -35,8 +35,8 @@ export default function Form({ museumservices }: { museumservices: MuseumService
                 Select a MuseumService
               </option>
               {museumservices.map((MuseumService) => (
-                <option key={MuseumService.MuseumServiceID} value={MuseumService.MuseumServiceID}>
-                  {MuseumService.ExhibitTypeID}
+                <option key={MuseumService.museumserviceid} value={MuseumService.museumserviceid}>
+                  {MuseumService.exhibittypeid}
                 </option>
               ))}
             </select>

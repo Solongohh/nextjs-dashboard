@@ -32,7 +32,7 @@ async function seedUsers(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Users (
-        UserID INTEGER PRIMARY KEY,
+        UserID SERIAL PRIMARY KEY,
         UserRole VARCHAR(255) NOT NULL,
         UserMail VARCHAR(255) NOT NULL,
         UserPhone CHAR(8) NOT NULL,
@@ -48,8 +48,8 @@ async function seedUsers(client) {
       Users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.Password, 10);
         return client.sql`
-        INSERT INTO Users (UserID, UserRole, UserMail, UserPhone, Password, EmployeeID)
-        VALUES (${user.UserID}, ${user.UserRole}, ${user.UserMail}, ${user.UserPhone}, ${hashedPassword}, ${user.EmployeeID})
+        INSERT INTO Users (UserRole, UserMail, UserPhone, Password, EmployeeID)
+        VALUES ( ${user.UserRole}, ${user.UserMail}, ${user.UserPhone}, ${hashedPassword}, ${user.EmployeeID})
         ON CONFLICT (UserID) DO NOTHING;
       `;
       }),
@@ -72,7 +72,7 @@ async function seedEmployee(client) {
     // Create the "Employee" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Employee (
-        EmployeeID INTEGER PRIMARY KEY,
+        EmployeeID SERIAL PRIMARY KEY, 
         LastName VARCHAR(255) NOT NULL,
         FirstName VARCHAR(255) NOT NULL,
         Birthdate DATE,
@@ -81,13 +81,12 @@ async function seedEmployee(client) {
         Phone Char(8),
         Education VARCHAR,
         OccupationID INTEGER,
-        Stateprize BOOLEAN NOT NULL,
-        Impairment BOOLEAN NOT NULL,
-        AddressID INTEGER NOT NULL,
-        DepartmentID INTEGER NOT NULL
+        Stateprize BOOLEAN,
+        Impairment BOOLEAN, 
+        AddressID INTEGER,
+        DepartmentID INTEGER
       );
     `;
-
     console.log(`Created "Employee" table`);
 
     // Insert data into the "employee" table
@@ -118,7 +117,7 @@ async function seedOccupation(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Occupation (
-        OccupationID INTEGER PRIMARY KEY,
+        OccupationID SERIAL PRIMARY KEY,
         Occupation VARCHAR(255) NOT NULL,
         ParentID INTEGER
       );
@@ -154,7 +153,7 @@ async function seedAddress(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Address (
-        AddressID INTEGER PRIMARY KEY,
+        AddressID SERIAL PRIMARY KEY,
         Country VARCHAR(255) NOT NULL,
         Province VARCHAR,
         District VARCHAR,
@@ -192,7 +191,7 @@ async function seedExhibitHistory(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExhibitHistory (
-        ExhibitID INTEGER PRIMARY KEY,
+        ExhibitID SERIAL PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         Name VARCHAR(255) NOT NULL,
         Added_Exhibit VARCHAR,
@@ -258,7 +257,7 @@ async function seedExhibitType(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExhibitType (
-        ExhibitTypeID INTEGER PRIMARY KEY,
+        ExhibitTypeID SERIAL PRIMARY KEY,
         ExhibitType VARCHAR,
         ParentID INTEGER NOT NULL
       );
@@ -294,7 +293,7 @@ async function seedMuseumService(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS MuseumService (
-        MuseumServiceID INTEGER PRIMARY KEY,
+        MuseumServiceID SERIAL PRIMARY KEY,
         ExhibitTypeID INTEGER NOT NULL,
         CustomerTypeID INTEGER NOT NULL,
         KindID INTEGER NOT NULL,
@@ -332,7 +331,7 @@ async function seedOtherService(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS OtherService (
-        OtherServiceID INTEGER PRIMARY KEY,
+        OtherServiceID SERIAL PRIMARY KEY,
         Services VARCHAR,
         KindID INTEGER NOT NULL,
         CustomerTypeID INTEGER NOT NULL,
@@ -370,7 +369,7 @@ async function seedKind(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Kind (
-        KindID INTEGER PRIMARY KEY,
+        KindID SERIAL PRIMARY KEY,
         Kind VARCHAR,
         ParentID INTEGER NOT NULL
       );
@@ -406,7 +405,7 @@ async function seedCustomerType(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS CustomerType (
-        CustomerTypeID INTEGER PRIMARY KEY,
+        CustomerTypeID SERIAL PRIMARY KEY,
         CustomerType VARCHAR
       );
     `;
@@ -441,7 +440,7 @@ async function seedBuildingCapacity(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS BuildingCapacity (
-        BuildingCapacityID INTEGER PRIMARY KEY,
+        BuildingCapacityID SERIAL PRIMARY KEY,
         BuildingCapacity VARCHAR,
         CapacityPlan DOUBLE precision NOT NULL,
         CapacityPerformance DOUBLE precision NOT NULL
@@ -478,7 +477,7 @@ async function seedExpenses(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Expenses (
-        ExpensesID INTEGER PRIMARY KEY,
+        ExpensesID SERIAL PRIMARY KEY,
         ExpensesTypeID INTEGER NOT NULL,
         ExpensesPlan DOUBLE precision NOT NULL,
         ExpensesPerformance DOUBLE precision NOT NULL
@@ -515,7 +514,7 @@ async function seedExpensesType(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ExpensesType (
-        ExpensesTypeID INTEGER PRIMARY KEY,
+        ExpensesTypeID SERIAL PRIMARY KEY,
         ExpensesType VARCHAR,
         ParentID INTEGER NOT NULL
       );
@@ -551,7 +550,7 @@ async function seedIncome(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Income (
-        IncomeID INTEGER PRIMARY KEY,
+        IncomeID SERIAL PRIMARY KEY,
         IncomeTypeID INTEGER NOT NULL,
         IncomePlan DOUBLE precision NOT NULL,
         IncomePerformance DOUBLE precision NOT NULL
@@ -588,7 +587,7 @@ async function seedIncomeType(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS IncomeType (
-        IncomeTypeID INTEGER PRIMARY KEY,
+        IncomeTypeID SERIAL PRIMARY KEY,
         IncomeType VARCHAR,
         ParentID INTEGER NOT NULL
       );
@@ -624,7 +623,7 @@ async function seedDepartment(client) {
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Department (
-        DepartmentID INTEGER PRIMARY KEY,
+        DepartmentID SERIAL PRIMARY KEY,
         DepartmentName VARCHAR,
         OrganisationID INTEGER
       );
@@ -660,7 +659,7 @@ async function seedOrganisation(client) {
     // Create the "organisation" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Organisation (
-        OrganisationID INTEGER PRIMARY KEY,
+        OrganisationID SERIAL PRIMARY KEY,
         OrganisationName VARCHAR
       );
     `;
@@ -695,7 +694,7 @@ async function seedBranch(client) {
     // Create the "branch" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS Branch (
-        BranchID INTEGER PRIMARY KEY,
+        BranchID SERIAL PRIMARY KEY,
         BranchName VARCHAR,
         AddressID INTEGER,
         OrganisationID INTEGER
@@ -732,7 +731,7 @@ async function seedAuthenticationHistory(client) {
     // Create the "AuthenticationHistory" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS AuthenticationHistory (
-        AuthenticationHistoryID INTEGER PRIMARY KEY,
+        AuthenticationHistoryID SERIAL PRIMARY KEY,
         LoginDate Date,
         BuildingCapacityID INTEGER,
         ExpensesID INTEGER,
@@ -794,7 +793,7 @@ async function seedServiceAddress(client) {
     // Create the "ServiceAddress" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ServiceAddress (
-        ServiceAddressID INTEGER PRIMARY KEY,
+        ServiceAddressID SERIAL PRIMARY KEY,
         MuseumServiceID INTEGER,
         AddressID INTEGER
       );
@@ -863,3 +862,24 @@ main().catch((err) => {
     err,
   );
 });
+
+// DROP TABLE ServiceAddress;
+// DROP TABLE AuthenticationHistory;
+// DROP TABLE BuildingCapacity;
+// DROP TABLE ExpensesType;
+// DROP TABLE IncomeType;
+// DROP TABLE Department;
+// DROP TABLE Expenses;
+// DROP TABLE Income;
+// DROP TABLE Organisation;
+// DROP TABLE Branch;
+// DROP TABLE Kind;
+// DROP TABLE CustomerType;
+// DROP TABLE MuseumService;
+// DROP TABLE OtherService;
+// DROP TABLE ExhibitType;
+// DROP TABLE ExhibitHistory;
+// DROP TABLE Address;
+// DROP TABLE Occupation;
+// DROP TABLE Employee;
+// DROP TABLE Users;

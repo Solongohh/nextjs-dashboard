@@ -1,23 +1,23 @@
 import Form from '@/app/ui/incomeExpenses/createIncomeform';
 import Breadcrumbs from '@/app/ui/incomeExpenses/breadcrumbs';
-import { fetchIncome } from '@/app/lib/data';
+import { fetchIncome, fetchIncomeType } from '@/app/lib/data';
  
 export default async function Page() {
   const income = await fetchIncome();
- 
+  const incomeType = await fetchIncomeType();
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Income', href: '/dashboard/form/createIncome' },
+          { label: 'Маягт', href: '/dashboard/form' },
           {
-            label: 'Create Income',
+            label: 'Орлого',
             href: '/dashboard/form/createIncome',
             active: true,
           },
         ]}
       />
-      <Form incomes={income} />
+      <Form incomes={income} incomeType={incomeType} />
     </main>
   );
 }

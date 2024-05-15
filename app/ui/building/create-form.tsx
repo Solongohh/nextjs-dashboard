@@ -1,5 +1,5 @@
 'use client';
-import { BuildingCapacity } from '@/app/lib/definitions';
+import { buildingcapacity } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CheckIcon,
@@ -12,17 +12,14 @@ import { createBuildingCapacity } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 // import { BuildingCapacity } from '../form/buttons';
 
-export default function Form({ buildingcapacities }: { buildingcapacities: BuildingCapacity[] }) {
+export default function Form({ buildingcapacities }: { buildingcapacities: buildingcapacity[] }) {
   const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createBuildingCapacity, initialState);
   return (
     <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* employee Name */}
         <div className="mb-4">
-          <form>
             <div className="relative grid gap-6 sm:grid-cols-3 lg:grid-cols-3">
-              <div></div>
               <input
                     id="plan"
                     name="plan"
@@ -42,7 +39,6 @@ export default function Form({ buildingcapacities }: { buildingcapacities: Build
                   required
               />
             </div>
-          </form>
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">

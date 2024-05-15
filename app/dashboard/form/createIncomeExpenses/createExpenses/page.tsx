@@ -1,23 +1,24 @@
 import ExpensesForm from '@/app/ui/incomeExpenses/createExpensesform';
 import Breadcrumbs from '@/app/ui/incomeExpenses/breadcrumbs';
-import { fetchExpenses } from '@/app/lib/data';
+import { fetchExpenses, fetchExpensesType } from '@/app/lib/data';
  
 export default async function Page() {
   const Expenses = await fetchExpenses();
+  const ExpensesType = await fetchExpensesType();
  
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Expenses', href: '/dashboard/form/createExpenses' },
+          { label: 'Маягт', href: '/dashboard/form' },
           {
-            label: 'Create Expenses',
+            label: 'Зарлага',
             href: '/dashboard/form/createExpenses',
             active: true,
           },
         ]}
       />
-      <ExpensesForm Expensess={Expenses} />
+      <ExpensesForm Expenses={Expenses} ExpensesType={ExpensesType} />
     </main>
   );
 }

@@ -9,9 +9,9 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'User', href: '/dashboard/form/createUser' },
+          { label: 'Хэрэглэгч', href: '/dashboard/form/createUser' },
           {
-            label: 'Create User',
+            label: 'Хэрэглэгч бүртгэх',
             href: '/dashboard/form/createUser',
             active: true,
           },

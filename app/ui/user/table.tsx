@@ -3,7 +3,7 @@ import { DeleteUser } from '@/app/ui/user/button';
 // import InvoiceStatus from '@/app/ui/users/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredUser } from '@/app/lib/data';
-import { User } from '@/app/lib/definitions';
+import { users } from '@/app/lib/definitions';
 
 export default async function UserTable({
   query,
@@ -23,11 +23,8 @@ export default async function UserTable({
   <div className="mt-6 flow-root">
     <div className="inline-block min-w-full align-middle">
       <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-        {/* Hidden div for mobile view */}
         <div className="md:hidden">
-          {/* Iterate through users to display in a list */}
         </div>
-        {/* Table for desktop view */}
         <table className="hidden min-w-full text-gray-900 md:table">
           <thead className="rounded-lg text-left text-sm font-normal">
             <tr>
