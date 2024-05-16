@@ -39,8 +39,8 @@ export default async function Page({
           
           <h1 className={`${lusitana.className} text-2xl`}>Орлого зарлагын хүснэгт</h1>
         </div>
-        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-          <Search placeholder="Ажилтан хайх..." />
+        <div className="mt-4 flex items-center justify-end gap-2 md:mt-8">
+          {/* <Search placeholder="Ажилтан хайх..." /> */}
           <CreateIncome />
           <CreateExpenses />
         </div>

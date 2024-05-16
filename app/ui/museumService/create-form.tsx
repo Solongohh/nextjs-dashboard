@@ -33,10 +33,10 @@ export default function Form({ museumservices, exhibittypes, kinds, provinces, d
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <h2>Музейн үйлчилгээний мэдээлэл</h2><hr></hr>
         <div className="mb-4 relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          <label htmlFor="zoriulalt" className="mb-2 block text-sm font-medium mt-4">
+          <label htmlFor="zoriulalt" className="block text-sm font-medium mt-4">
             Үйлчилгээний төрөл
           </label>
-          <label htmlFor="zoriulalt" className="mb-2 block text-sm font-medium mt-4">
+          <label htmlFor="zoriulalt" className="block text-sm font-medium mt-4">
             Үйлчилгээний хэлбэр
           </label>
           <select
@@ -77,7 +77,7 @@ export default function Form({ museumservices, exhibittypes, kinds, provinces, d
         <h2>Үйлчлүүлэгчид</h2><hr></hr>
         <div className="mt-4 relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
           {customertypes.map((customertype) => (
-            <div key={customertype.customertypeid}> 
+            <div key={customertype.customertypeid} className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2"> 
               <option key={customertype.customertypeid} value={customertype.customertypeid} className='text-sm font-medium'>
                 {customertype.customertype}
               </option>
@@ -96,10 +96,10 @@ export default function Form({ museumservices, exhibittypes, kinds, provinces, d
 
         <h2 className='mt-4'>Байршил</h2><hr></hr>
         <div className="mt-4 relative grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          <label htmlFor="province" className="mb-2 block text-sm font-medium">
+          <label htmlFor="province" className="block text-sm font-medium">
             Улс
           </label>
-          <label htmlFor="phone" className="mb-2 block text-sm font-medium">
+          <label htmlFor="phone" className="block text-sm font-medium">
             Аймаг
           </label>
           <input
@@ -128,10 +128,10 @@ export default function Form({ museumservices, exhibittypes, kinds, provinces, d
               </option>
             ))}
           </select>
-          <label htmlFor="province" className="mb-2 block text-sm font-medium">
+          <label htmlFor="province" className="block text-sm font-medium">
             Дүүрэг
           </label>
-          <label htmlFor="khoroo" className="mb-2 block text-sm font-medium">
+          <label htmlFor="khoroo" className="block text-sm font-medium">
             Хороо
           </label>
           <select

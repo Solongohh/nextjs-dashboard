@@ -1,23 +1,24 @@
 import Form from '@/app/ui/user/create-form';
 import Breadcrumbs from '@/app/ui/building/breadcrumbs';
-import { fetchUser } from '@/app/lib/data';
+import { fetchEmployee, fetchRole } from '@/app/lib/data';
  
 export default async function Page() {
-  const user = await fetchUser();
+  const employee = await fetchEmployee();
+  const role = await fetchRole();
  
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Хэрэглэгч', href: '/dashboard/form/createUser' },
+          { label: 'Хэрэглэгч', href: '/dashboard/users' },
           {
             label: 'Хэрэглэгч бүртгэх',
-            href: '/dashboard/form/createUser',
+            href: '/dashboard/users/create',
             active: true,
           },
         ]}
       />
-      <Form users={user}/>
+      <Form employees={employee} roles={role}/>
     </main>
   );
 }

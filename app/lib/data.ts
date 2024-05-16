@@ -10,6 +10,7 @@ import { sql } from '@vercel/postgres';
     museumservice,
     museumservicetable,
     otherservice,
+    service,
     otherservicetable,
     occupation,
     address,
@@ -27,7 +28,9 @@ import { sql } from '@vercel/postgres';
     district,
     added_exhibit,
     rating,
-    customertype
+    customertype,
+    role,
+    report
   } from './definitions';
   import { formatCurrency } from './utils';
   import { unstable_noStore as noStore } from 'next/cache';
@@ -103,7 +106,6 @@ import { sql } from '@vercel/postgres';
       LEFT JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;;
   
       `;
-      console.log(users);
       return users.rows;
     } catch (error) {
       console.error('Database Error:', error);
@@ -117,8 +119,7 @@ import { sql } from '@vercel/postgres';
       const data = await sql<users>`
       SELECT
           Users.*,
-          Employee.*,
-          Address.*
+          Employee.*
       FROM Users
       LEFT JOIN Employee ON Employee.EmployeeID = Users.EmployeeID;`;
   
@@ -129,6 +130,22 @@ import { sql } from '@vercel/postgres';
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch the user.');
+    }
+  }
+  export async function fetchRole() {
+    noStore();
+    try {
+      const data = await sql<role>`
+      SELECT *
+      FROM roles`;
+  
+      const Role = data.rows.map((role) => ({
+        ...role,
+      }));
+      return Role;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch the role.');
     }
   }
   export async function fetchEmployee() {
@@ -394,6 +411,27 @@ import { sql } from '@vercel/postgres';
     } catch (error) {
       console.error('Database Error:', error);
       throw new Error('Failed to fetch OtherService data.');
+    }
+  }
+  export async function fetchService() {
+    // Add noStore() here to prevent the response from being cached.
+    // This is equivalent to in fetch(..., {cache: 'no-store'}).
+    noStore();
+    try {
+      // Artificially delay a response for demo purposes.
+      // Don't do this in production :)
+  
+      console.log('Fetching Service data...');
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+      const data = await sql<service>`
+        SELECT *
+        FROM services;
+      `;
+      return data.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch Service data.');
     }
   }
   export async function fetchFilteredOtherService(
@@ -675,26 +713,27 @@ import { sql } from '@vercel/postgres';
       throw new Error('Failed to fetch the customertype.');
     }
   }
-  // export async function fetchEmployeePages(query: string) {
-  //   noStore();
-  //   try {
-  //     const count = await sql`SELECT COUNT(*)
-  //     FROM Employee
-  //      LEFT JOIN Occupation ON Occupation.OccupationID = Employee.OccupationID
-  //      LEFT JOIN Department ON Department.DepartmentID = Employee.DepartmentID
-  //      LEFT JOIN Department ON Department.DepartmentID = Employee.DepartmentID
-  //      LEFT JOIN Address ON Address.AddressID = Employee.AddressID
-  //     WHERE
-  //       Employee.EmployeeID ${`%${query}%`} OR
-  //       Employee.Sex ILIKE ${`%${query}%`} OR
-  //       Employee.Occupation::text ILIKE ${`%${query}%`} OR
-  //       Employee.Education::text ILIKE ${`%${query}%`}
-  //   `;
+  export async function fetchReport(
+    query: string,
+    currentPage: number,
+  ) {
+    noStore();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   
-  //     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-  //     return totalPages;
-  //   } catch (error) {
-  //     console.error('Database Error:', error);
-  //     throw new Error('Failed to fetch total number of employee.');
-  //   }
-  // }
+    try {
+      const report = await sql<report>`
+      SELECT *
+      FROM report  
+      `;
+      return report.rows;
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch Users.');
+    }
+  }
+  // create table report(
+  //   reportid serial primary key,
+  //   report jsonb,
+  //   status varchar,
+  //   sentdate date
+  //   )

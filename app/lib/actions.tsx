@@ -45,43 +45,21 @@ export type State = {
   errors?: {
     userId: number;
     userRole: string;
-    userName: string;
-    userPhone: number;
+    userMail: string;
     password: string;
     employeeID: number;
   };
   message?: string | null;
 };
-export async function createUser(prevState: State, formData: FormData) {
-  const validatedFields = CreateUser.safeParse({
-    userID: formData.get('userID'),
-    userRole: formData.get('userRole'),
-    userName: formData.get('userName'),
-    userPhone: formData.get('userPhone'),
-    password: formData.get('password'),
-    employeeID: formData.get('employeeID'),
-  });
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create User.',
-    };
-  }
-  // Prepare data for insertion into the database
-  const { userId, userRole, userName, userPhone, password, employeeID } = validatedFields.data;
+export async function createUser(user: any) {
   const date = new Date().toISOString().split('T')[0];
   try {
     await sql`
-            INSERT INTO Users (UserID, UserRole, UserName, UserPhone, Password)
-            VALUES (${userId}, ${userRole}, ${userName}, ${userPhone}, ${password})
-            WHERE EmployeeID = ${employeeID}
+            INSERT INTO Users (UserRole, UserMail, Password, EmployeeID)
+            VALUES (${user.userRole}, ${user.userMail}, ${user.password}, ${user.employeeID})
         `;
-    await sql`
-            INSERT INTO AuthenticationHistory (UserID, date)
-            VALUES (${userId}, ${date})
-      `;
   } catch (error) {
+    console.log(error);
     return {
       message: 'Database Error: Failed to Create User.',
     };
@@ -286,28 +264,11 @@ export async function deleteOtherService(id: string) {
   revalidatePath('/dashboard/form');
 }
 const CreateOtherService = FormOtherServiceSchema.omit({ otherServiceID: true, date: true });
-export async function createOtherService(prevState: OtherServiceState, formData: FormData) {
-  const validatedFields = CreateOtherService.safeParse({
-    otherServiceID: formData.get('otherServiceID'),
-    services: formData.get('services'),
-    customerTypeID: formData.get('customerTypeID'),
-    kindID: formData.get('kindID'),
-    customerCount: formData.get('customerCount')
-  });
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create OtherService.',
-    };
-  }
-  // Prepare data for insertion into the database
-  const { services, customerTypeID, kindID, customerCount } = validatedFields.data;
-  const date = new Date().toISOString().split('T')[0];
+export async function createOtherService(otherservice: any) {
   try {
     await sql`
-            INSERT INTO OtherService (Services, CustomerTypeID, KindID, CustomerCount)
-            VALUES (${services}, ${customerTypeID}, ${kindID}, ${customerCount})
+            INSERT INTO OtherService (Services, CustomerTypeID, CustomerCount)
+            VALUES (${otherservice.service}, ${otherservice.customerTypeID}, ${otherservice.customerCount})
         `;
   } catch (error) {
     return {
@@ -350,7 +311,6 @@ export type EmployeeState = {
 };
 const CreateEmployee = FormEmployeeSchema.omit({ employeeID: true, date: true });
 export async function createEmployee(employee: any) {
-  console.log(employee);
   try {
     await sql`
           INSERT INTO Address (Country, province, district, khoroo)

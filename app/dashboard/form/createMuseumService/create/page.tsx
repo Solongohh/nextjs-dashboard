@@ -14,7 +14,7 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Маягт', href: '/dashboard/form' },
+          { label: 'Маягт', href: '/dashboard/form/createMuseumService' },
           {
             label: 'Музейн үйлчилгээ',
             href: '/dashboard/form/createMuseumService',

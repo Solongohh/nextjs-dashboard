@@ -13,6 +13,10 @@ export type users = {
   password: string;
   employeeid: number
 };
+export type role = {
+  roleid: number;
+  role: string;
+}
 export type usertable = {
   userid: number;
   userrole: string;
@@ -37,7 +41,7 @@ export type auth = {
 export type employee = {
   employeeid: number;
   lastname: string;
-  firsname: string;
+  firstname: string;
   birthDate: Date;
   sex: ['F', 'M'];
   register: string[10];
@@ -133,6 +137,10 @@ export type otherservice = {
   customertypeid: number;
   customercount: number;
 };
+export type service = {
+  serviceid: number;
+  service: string;
+}
 export type otherservicetable = {
   otherserviceid: number;
   services: ['Музейн боловсролын ажил', 'Сургалт семинар', 'Дугуйлан', 'Уралдаан, тэмцээн, наадам', 'Хурал, зөвлөгөөн', 'Үзэсгэлэн худалдаа', 'Зохион байгуулсан эвент / арга хэмжээ'];
@@ -213,4 +221,10 @@ export type district = {
   districtid: number;
   district: string; 
   provinceid: number;
+}
+export type report = {
+  reportid: number;
+  report: string;
+  status: 'verified' | 'denied';
+  sentDate: Date;
 }
